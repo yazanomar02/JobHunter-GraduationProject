@@ -38,7 +38,7 @@ function Login() {
     setLoading(true);
     try {
       const res = await userService.login(userData);
-      if (res.status === 200) {
+      if (res) {
         const userData = await userService.getCurrentUser();
         if (userData) {
           await updateUser();
@@ -50,10 +50,8 @@ function Login() {
             }
           } else if (userData.role === "employer") {
             if (userData.userProfile.doneOnboarding === true) {
-              console.log("Sending to dashboard");
               navigate("/dashboard/home");
             } else {
-              console.log(userData);
               navigate("/company-onboarding");
             }
           }

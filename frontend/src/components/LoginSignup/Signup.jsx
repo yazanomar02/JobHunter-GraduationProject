@@ -58,23 +58,8 @@ function Signup() {
 
     try {
       const res = await userService.signup(userData);
-      if (res.data.statusCode === 201) {
-        const res = await userService.login({ email, password });
-        if (res.status === 200) {
-          const userData = await userService.getCurrentUser();
-          if (userData) {
-            console.log(userData);
-            if (userData.role === "jobSeeker") {
-              navigate("/user-onboarding");
-            } else {
-              navigate("/company-onboarding");
-            }
-
-            updateUser();
-          }
-        }
-        setLoading(false);
-      }
+      navigate("/login");
+      setLoading(false);
     } catch (error) {
       setErrorMessage(error.response.data.message);
       resetErrorMessage();

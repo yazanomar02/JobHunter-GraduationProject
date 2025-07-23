@@ -39,9 +39,10 @@ function AboutForm({ userData }) {
   }, [formData]);
 
   const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
-  };
+  const { name, value } = e.target;
+  setFormData({ ...formData, [name]: value });
+};
+
 
   const handleFileChange = async (e) => {
     const file = e.target.files[0];

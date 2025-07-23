@@ -4,7 +4,7 @@ import DisclaimerBanner from "../components/Common/DisclaimerBanner";
 function JobListing() {
   return (
     <div className="mt-16">
-      <DisclaimerBanner />
+      {/* <DisclaimerBanner /> */}
       <MainJobSection />
     </div>
   );

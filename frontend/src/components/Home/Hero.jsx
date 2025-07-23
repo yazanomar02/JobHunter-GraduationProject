@@ -32,7 +32,7 @@ function Hero() {
             }
           </Link>
           <p className="underline font-semibold text-gray-900">
-            <a href="#">Download App</a>
+            {/* <a href="#">Download App</a> */}
           </p>
         </div>
         <div className="mt-24 flex gap-8 items-center md:items-end justify-center md:justify-normal md:pl-20 pl-14 pb-9 md:pb-0 px-5 md:px-0 md:pt-5">

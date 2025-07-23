@@ -20,7 +20,7 @@ function CompaniesPage() {
 
   return (
     <div className="mt-16 px-10">
-      <DisclaimerBanner />
+      {/* <DisclaimerBanner /> */}
       <div>
         <div className="flex gap-5 items-center mb-5">
           <h2 className="text-2xl font-medium ">Top companies hiring now</h2>

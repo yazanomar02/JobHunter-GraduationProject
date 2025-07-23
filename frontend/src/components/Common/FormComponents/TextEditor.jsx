@@ -44,7 +44,7 @@ function TextEditor({
       )}
       <Editor
         id={id}
-        apiKey={import.meta.env.VITE_TINY_MCE_API}
+        apiKey='u8l6mzvq9t0hcqdmac91je9675nkw6nkiize819dgmfscytq' // تم التغيير
         value={value}
         onEditorChange={handleEditorChange}
         init={{

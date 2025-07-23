@@ -24,7 +24,7 @@ function JobDetails() {
 
   return (
     <div className="mt-16">
-      <DisclaimerBanner />
+      {/* <DisclaimerBanner /> */}
       <div className=" px-10 flex gap-8 lg:gap-14 flex-col md:flex-row">
         {/* Left */}
         <div className="w-full md:w-2/3 flex flex-col gap-6">

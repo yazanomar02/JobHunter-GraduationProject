@@ -20,6 +20,7 @@ function Navbar() {
       path: "/companies",
     },
   ];
+  const navigate = useNavigate();
   const dispatch = useDispatch();
   const { status, userData } = useSelector((store) => store.auth);
   const [open, setOpen] = useState(false);
@@ -40,13 +41,13 @@ function Navbar() {
       .logout()
       .then(() => {
         dispatch(logout());
+        navigate('/login');
       })
       .catch((error) => {
         console.log(error);
       });
   };
 
-  const navigate = useNavigate();
 
   const activeStyle = "text-green-700 pb-4 border-b-2 border-green-700";
 
@@ -60,7 +61,6 @@ function Navbar() {
               className="w-10 rounded-lg mr-3"
               alt="JobHunter Logo"
             />
-            / jobhunter
           </Link>
         </div>
 

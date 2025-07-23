@@ -32,9 +32,12 @@ function CompanyCard({ bgColor, company }) {
               <span className="text-xs text-gray-500 flex gap-3 items-center ">
                 <i className="fa-solid fa-user-group"></i>
                 <p>
-                  {companySize.from}-{companySize.to} EMPLOYEES
+                  {companySize?.from && companySize?.to
+                    ? `${companySize.from}-${companySize.to} EMPLOYEES`
+                    : "Company size not specified"}
                 </p>
               </span>
+
             </div>
           </div>
 
