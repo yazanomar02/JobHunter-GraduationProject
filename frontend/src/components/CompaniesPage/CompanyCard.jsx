@@ -43,7 +43,14 @@ function CompanyCard({ bgColor, company }) {
 
           <div className="flex gap-2.5 text-gray-700">
             <a
-              href={companySocialProfiles?.linkedIn}
+              href={"company/"+companySocialProfiles?.linkedIn}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+             <i className="fa-solid fa-building hover:cursor-pointer text-lg"></i>
+            </a>
+            <a
+              href={"company/"+companySocialProfiles?.linkedIn}
               target="_blank"
               rel="noopener noreferrer"
             >
