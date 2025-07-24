@@ -407,6 +407,24 @@ export const resetPassword = asyncHandler(async (req, res) => {
   return res.status(200).json({ message: "Password reset successfully" });
 });
 
+export const changePassword = asyncHandler(async (req, res) => {
+  const { currentPassword, newPassword } = req.body;
+  if (!currentPassword || !newPassword) {
+    return res.status(400).json({ message: "Current and new password are required" });
+  }
+  const user = await User.findById(req.user._id).select("password");
+  if (!user) {
+    return res.status(404).json({ message: "User not found" });
+  }
+  const isMatch = await user.isPasswordCorrect(currentPassword);
+  if (!isMatch) {
+    return res.status(401).json({ message: "Current password is incorrect" });
+  }
+  user.password = newPassword;
+  await user.save();
+  return res.status(200).json({ message: "Password changed successfully" });
+});
+
 export {
   ping,
   authPing,

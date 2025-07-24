@@ -16,6 +16,7 @@ export const userService = {
   getPublicProfile,
   forgotPassword,
   resetPassword,
+  changePassword,
 };
 
 async function login(userData) {
@@ -82,4 +83,8 @@ async function forgotPassword(data) {
 
 async function resetPassword(data) {
   return apiCall("post", "/users/reset-password", data);
+}
+
+async function changePassword(data) {
+  return apiCall("patch", "/users/change-password", data);
 }

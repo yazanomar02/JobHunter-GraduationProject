@@ -14,6 +14,7 @@ import {
   userPublicProfile,
   forgotPassword,
   resetPassword,
+  changePassword,
 } from "../controllers/user.controller.js";
 import { verifyJWT } from "../middlewares/auth.middleware.js";
 import { upload } from "../middlewares/multer.middleware.js";
@@ -37,5 +38,6 @@ router.route("/saved-jobs").get(verifyJWT, getSavedJobs);
 router.route("/public-profile/:id?").get(userPublicProfile);
 router.post("/forgot-password", forgotPassword);
 router.post("/reset-password", resetPassword);
+router.patch("/change-password", verifyJWT, changePassword);
 
 export default router;

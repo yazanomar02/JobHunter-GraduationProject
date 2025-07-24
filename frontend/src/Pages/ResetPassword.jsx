@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Link, useSearchParams } from "react-router-dom";
+import { Link, useSearchParams, useNavigate } from "react-router-dom";
 import logo from "../components/assets/media/JobHunter.png";
 import { userService } from "../services/userService";
 
@@ -11,11 +11,19 @@ function ResetPassword() {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const [searchParams] = useSearchParams();
+  const navigate = useNavigate();
 
   useEffect(() => {
     const urlToken = searchParams.get("token");
     if (urlToken) setToken(urlToken);
   }, [searchParams]);
+
+  useEffect(() => {
+    if (success) {
+      const timer = setTimeout(() => navigate("/login"), 2000);
+      return () => clearTimeout(timer);
+    }
+  }, [success, navigate]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -83,6 +91,7 @@ function ResetPassword() {
                   onChange={e => setToken(e.target.value)}
                   className="rounded h-10 text-base pl-5 mb-3 border-x border-y border-gray-400"
                   placeholder="Paste your reset code here"
+                  disabled={!!searchParams.get("token")}
                 />
                 <label className="font-semibold">New Password:</label>
                 <input
