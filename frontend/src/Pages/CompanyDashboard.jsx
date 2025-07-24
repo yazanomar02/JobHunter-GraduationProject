@@ -5,6 +5,7 @@ import Dashboard from "../components/CompanyDashboard/Dashboard";
 import Applications from "../components/CompanyDashboard/Applications";
 import Shortlisted from "../components/CompanyDashboard/Shortlisted";
 import JobPosting from "./JobPosting";
+import Messages from "../components/CompanyDashboard/Messages";
 import { useSelector } from "react-redux";
 
 function CompanyDashboard() {
@@ -23,6 +24,7 @@ function CompanyDashboard() {
           <Route path="/applications" element={<Applications />} />
           <Route path="/shortedlisted" element={<Shortlisted />} />
           <Route path="/post-job" element={<JobPosting />} />
+          <Route path="/messages" element={<Messages />} />
         </Routes>
       </div>
     </div>

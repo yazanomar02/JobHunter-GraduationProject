@@ -22,6 +22,13 @@ function CompanyCard({ bgColor, company }) {
     navigate(`/company/${_id}/${nameSlug}`);
   };
 
+  // دالة مساعدة لتصحيح الرابط
+  const formatUrl = (url) => {
+    if (!url) return "";
+    if (url.startsWith("http://") || url.startsWith("https://")) return url;
+    return `https://${url}`;
+  };
+
   return (
     <div className="rounded-xl border border-gray-300 p-1.5 hover:cursor-pointer" onClick={redirectToCompanyProfile}>
       <div
@@ -51,27 +58,39 @@ function CompanyCard({ bgColor, company }) {
             <span onClick={e => { e.stopPropagation(); redirectToCompanyProfile(); }} title="View Company Profile">
               <i className="fa-solid fa-building hover:cursor-pointer text-lg"></i>
             </span>
-            <a
-               href={"company/"+companySocialProfiles?.linkedIn}
-               target="_blank"
-               rel="noopener noreferrer"
-             >
-               <i className="fa-brands fa-linkedin hover:cursor-pointer text-lg"></i>
-             </a>
-            <a
-              href={companySocialProfiles?.twitter}
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              <i className="fa-brands fa-square-twitter hover:cursor-pointer text-lg"></i>
-            </a>
-            <a
-              href={companySocialProfiles?.portfolioWebsite}
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              <i className="fa-solid fa-globe hover:cursor-pointer text-lg"></i>
-            </a>
+            {companySocialProfiles?.linkedIn && (
+              <a
+                href={formatUrl(companySocialProfiles.linkedIn)}
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={e => e.stopPropagation()}
+                title="LinkedIn"
+              >
+                <i className="fa-brands fa-linkedin hover:cursor-pointer text-lg"></i>
+              </a>
+            )}
+            {companySocialProfiles?.twitter && (
+              <a
+                href={formatUrl(companySocialProfiles.twitter)}
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={e => e.stopPropagation()}
+                title="X (Twitter)"
+              >
+                <i className="fa-brands fa-x-twitter hover:cursor-pointer text-lg"></i>
+              </a>
+            )}
+            {companySocialProfiles?.portfolioWebsite && (
+              <a
+                href={formatUrl(companySocialProfiles.portfolioWebsite)}
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={e => e.stopPropagation()}
+                title="Website"
+              >
+                <i className="fa-solid fa-globe hover:cursor-pointer text-lg"></i>
+              </a>
+            )}
           </div>
         </div>
         {jobListings && jobListings.length > 0 && (
