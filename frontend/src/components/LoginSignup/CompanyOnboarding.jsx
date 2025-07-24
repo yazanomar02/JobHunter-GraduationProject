@@ -57,9 +57,7 @@ function CompanyOnboarding() {
   const updateData = async (data) => {
     try {
       const res = await userService.updateUserProfile(data);
-      if (res.status === 200) {
-        navigate("/dashboard/home");
-      }
+      navigate("/dashboard/home");
     } catch (error) {
       console.log(error);
     }

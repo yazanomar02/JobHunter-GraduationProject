@@ -8,6 +8,8 @@ import {
   removeFromApplications,
   removeFromShortlist,
   shortlistCandidate,
+  getCompanyById,
+  updateCompanyProfile,
 } from "../controllers/company.controllers.js";
 import { verifyJWT } from "../middlewares/auth.middleware.js";
 const router = Router();
@@ -26,5 +28,7 @@ router
 
 router.route("/shortlist-candidate").post(verifyJWT, shortlistCandidate);
 router.route("/remove-from-shortlisted").post(verifyJWT, removeFromShortlist);
+router.route("/:id").get(getCompanyById);
+router.route("/:id").put(verifyJWT, updateCompanyProfile);
 
 export default router;

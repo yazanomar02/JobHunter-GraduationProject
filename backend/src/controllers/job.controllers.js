@@ -331,7 +331,7 @@ const getCompanies = asyncHandler(async (req, res) => {
         for (let i = 0; i < company.userProfile.jobListings.length; i++) {
             const job = await Job.findById(
                 company.userProfile.jobListings[i]
-            ).select("title location _id");
+            ).select("title location _id active");
             company.userProfile.jobListings[i] = job;
         }
     }

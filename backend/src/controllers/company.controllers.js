@@ -314,6 +314,45 @@ const removeFromShortlist = asyncHandler(async (req, res) => {
         );
 });
 
+const getCompanyById = asyncHandler(async (req, res) => {
+    const companyId = req.params.id;
+    // نبحث عن المستخدم الذي دوره employer وله هذا ال id
+    const company = await User.findOne({ _id: companyId, role: "employer" }).select(
+        "email _id userProfile"
+    );
+    if (!company) {
+        throw new ApiError(404, "Company not found");
+    }
+    return res.status(200).json(new ApiResponse(200, company, "Company profile fetched successfully"));
+});
+
+const updateCompanyProfile = asyncHandler(async (req, res) => {
+    const { role, _id } = req.user;
+    console.log('updateCompanyProfile:', { role, _id, body: req.body });
+    if (role !== "employer") {
+        throw new ApiError(403, "Only employers are authorized to update company profile");
+    }
+    const allowedUpdates = [
+        "companyName", "companyDescription", "contactNumber", "address", "industry", "companySize", "companyLogo", "companyWebsite", "companySocialProfiles", "employeeBenefits", "aiUseLimit"
+    ];
+    const updates = Object.keys(req.body);
+    console.log('updates:', updates);
+    const isValidOperation = updates.every((update) => allowedUpdates.includes(update));
+    console.log('isValidOperation:', isValidOperation);
+    if (!isValidOperation) {
+        return res.status(400).json({ error: "Invalid updates! Allowed: " + allowedUpdates.join(", ") + ". Sent: " + updates.join(", ") });
+    }
+    const updateObj = {};
+    updates.forEach((update) => {
+        updateObj[`userProfile.${update}`] = req.body[update];
+    });
+    const company = await User.findByIdAndUpdate(_id, updateObj, { new: true, runValidators: true }).select("-password");
+    if (!company) {
+        return res.status(404).json({ error: "Company not found" });
+    }
+    res.status(200).json(new ApiResponse(200, company, "Company profile updated successfully"));
+});
+
 export {
     getAllJobListings,
     getAllApplications,
@@ -323,4 +362,6 @@ export {
     removeFromApplications,
     shortlistCandidate,
     removeFromShortlist,
+    getCompanyById,
+    updateCompanyProfile,
 };

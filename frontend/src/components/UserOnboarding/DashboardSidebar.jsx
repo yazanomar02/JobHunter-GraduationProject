@@ -59,7 +59,10 @@ function DashboardSidebar() {
   };
 
   const handleGoToCompanyProfile = () => {
-    navigate(`/company/${userData?.userProfile?.companyName}`);
+    const id = userData?._id;
+    const name = userData?.userProfile?.companyName || "company";
+    const slug = name.replace(/\s+/g, "-").toLowerCase();
+    navigate(`/company/${id}/${slug}`);
   };
   return (
     <div className="sticky top-0 flex h-screen w-full flex-col justify-between border-r border-gray-200 bg-white px-1 py-5 xl:py-12 xl:px-2">
@@ -111,7 +114,7 @@ function DashboardSidebar() {
           })}
         </div>
       </div>
-      <div className="ie-user hidden items-center gap-3 px-3 xl:flex hover:cursor-pointer" onClick={handleGoToCompanyProfile}>
+      <div className="ie-user items-center gap-3 px-3 flex hover:cursor-pointer" onClick={handleGoToCompanyProfile}>
         <div className="h-10 w-10 rounded-full p-px overflow-hidden border">
           <img
             src={userData?.userProfile?.companyLogo}

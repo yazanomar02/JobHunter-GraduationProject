@@ -4,20 +4,26 @@ import { useNavigate } from "react-router-dom";
 
 function CompanyCard({ bgColor, company }) {
   const {
-    companyName,
-    companyLogo,
-    jobListings,
-    companySize,
-    companySocialProfiles,
+    _id,
+    userProfile: {
+      companyName,
+      companyLogo,
+      jobListings = [],
+      companySize,
+      companySocialProfiles,
+    } = {},
   } = company;
 
   const navigate = useNavigate();
-  const redirectToDetail = (id) => {
-    navigate(`/job/${id}`);
+  // توجيه لصفحة الشركة العامة
+  const redirectToCompanyProfile = () => {
+    // اسم الشركة في الرابط (معالجة المسافات)
+    const nameSlug = companyName ? companyName.replace(/\s+/g, "-").toLowerCase() : "company";
+    navigate(`/company/${_id}/${nameSlug}`);
   };
 
   return (
-    <div className="rounded-xl border border-gray-300 p-1.5">
+    <div className="rounded-xl border border-gray-300 p-1.5 hover:cursor-pointer" onClick={redirectToCompanyProfile}>
       <div
         className="rounded-xl border  p-2"
         style={{ backgroundColor: bgColor }}
@@ -42,20 +48,16 @@ function CompanyCard({ bgColor, company }) {
           </div>
 
           <div className="flex gap-2.5 text-gray-700">
+            <span onClick={e => { e.stopPropagation(); redirectToCompanyProfile(); }} title="View Company Profile">
+              <i className="fa-solid fa-building hover:cursor-pointer text-lg"></i>
+            </span>
             <a
-              href={"company/"+companySocialProfiles?.linkedIn}
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-             <i className="fa-solid fa-building hover:cursor-pointer text-lg"></i>
-            </a>
-            <a
-              href={"company/"+companySocialProfiles?.linkedIn}
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              <i className="fa-brands fa-linkedin hover:cursor-pointer text-lg"></i>
-            </a>
+               href={"company/"+companySocialProfiles?.linkedIn}
+               target="_blank"
+               rel="noopener noreferrer"
+             >
+               <i className="fa-brands fa-linkedin hover:cursor-pointer text-lg"></i>
+             </a>
             <a
               href={companySocialProfiles?.twitter}
               target="_blank"
@@ -72,26 +74,27 @@ function CompanyCard({ bgColor, company }) {
             </a>
           </div>
         </div>
-        {jobListings.length > 0 && (
+        {jobListings && jobListings.length > 0 && (
           <div className="flex flex-col gap-2 my-5">
             <h3 className="text-sm font-medium border-gray-600 border w-32 flex items-center justify-center rounded-md text-gray-800 bg-green-300">
               Active Listings
             </h3>
-            {jobListings?.map((listing, index) => (
-              <div
-                className="bg-gray-100 rounded-xl px-3 py-1.5 flex gap-3 items-center hover:cursor-pointer"
-                key={index}
-                onClick={() => redirectToDetail(listing._id)}
-              >
-                <span className="text-sm font-medium text-gray-900">
-                  {listing?.title}
-                </span>
-                <Dot />
-                <span className="text-xs font-medium text-gray-600">
-                  {listing?.location}
-                </span>
-              </div>
-            ))}
+            {jobListings
+              .filter((listing) => listing && (listing.active === true || listing.active === undefined))
+              .map((listing, index) => (
+                <div
+                  className="bg-gray-100 rounded-xl px-3 py-1.5 flex gap-3 items-center"
+                  key={index}
+                >
+                  <span className="text-sm font-medium text-gray-900">
+                    {listing?.title}
+                  </span>
+                  <Dot />
+                  <span className="text-xs font-medium text-gray-600">
+                    {listing?.location}
+                  </span>
+                </div>
+              ))}
           </div>
         )}
       </div>

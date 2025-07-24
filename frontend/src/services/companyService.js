@@ -14,6 +14,8 @@ export const companyService = {
     removeApplication,
     removeFromShortlist,
     updateJobActivation,
+    getCompanyById,
+    updateCompanyById,
 };
 
 async function getAllJobListings() {
@@ -62,4 +64,12 @@ async function removeFromShortlist(data) {
 
 async function updateJobActivation(id) {
     return apiCall("put", `/jobs/${id}`);
+}
+
+async function getCompanyById(id) {
+    return apiCall("get", `/company/${id}`);
+}
+
+async function updateCompanyById(id, data) {
+    return apiCall("put", `/company/${id}`, data);
 }

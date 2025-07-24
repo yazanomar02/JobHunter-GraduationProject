@@ -62,7 +62,7 @@ function AllRoutes() {
       />
       <Route path="/user-onboarding" element={<UserOnboaring />} />
       <Route path="/company-onboarding" element={<CompanyOnboarding />} />
-      <Route path="/company/:name" element={<CompanyPublicProfile />} />
+      <Route path="/company/:id/:slug" element={<CompanyPublicProfile />} />
       <Route path="/saved-jobs" element={<SavedJobs />} />
       <Route path="*" element={<NotFound />} />
     </Routes>

@@ -30,7 +30,7 @@ function CompaniesPage() {
         </div>
         <div className="grid grid-cols-2 gap-5">
           {companies?.map((company) => (
-            <CompanyCard key={company._id} company={company.userProfile} />
+            <CompanyCard key={company._id} company={company} />
           ))}
         </div>
       </div>
