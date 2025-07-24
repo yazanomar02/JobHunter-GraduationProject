@@ -4,5 +4,7 @@ const socialProfilesSchema = new Schema({
     github: String,
     twitter: String,
     portfolioWebsite: String,
+    email: String,
+    whatsapp: String,
 });
 export { socialProfilesSchema };

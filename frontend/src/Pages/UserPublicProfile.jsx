@@ -43,20 +43,42 @@ function UserPublicProfile() {
                 <h2 className="mt-4 text-2xl font-semibold text-center">
                     {userDetails?.userProfile?.name}
                 </h2>
-                <div className="text-xs font-medium text-gray-600 flex gap-1.5 items-center  justify-center">
-                    <span>
-                        {userDetails?.userProfile?.yearsOfExperience || 0} Years
-                        of exp
+                <div className="text-xs font-medium text-gray-600 flex gap-3 items-center justify-center mt-2">
+                  {/* سنوات الخبرة */}
+                  <span className="flex items-center gap-1">
+                    <i className="fa-solid fa-star text-yellow-500"></i>
+                    {userDetails?.userProfile?.yearsOfExperience || 0} Years of exp
+                  </span>
+                  {/* فاصل */}
+                  <div className="h-1 w-1 bg-gray-600 rounded-full"></div>
+                  {/* الدور الأساسي */}
+                  {userDetails?.userProfile?.primaryRole && (
+                    <span className="flex items-center gap-1">
+                      <i className="fa-solid fa-briefcase text-green-600"></i>
+                      <span className="capitalize">{userDetails?.userProfile?.primaryRole.replace(/_/g, ' ')}</span>
                     </span>
-
-                    <div className="h-1 w-1 bg-gray-600 rounded-full"></div>
-                    {userDetails?.userProfile?.address?.country && (
-                        <span className="capitalize ">
-                            {userDetails?.userProfile?.address?.country}
-                        </span>
-                    )}
+                  )}
+                  {/* فاصل */}
+                  <div className="h-1 w-1 bg-gray-600 rounded-full"></div>
+                  {/* الموقع */}
+                  {userDetails?.userProfile?.address?.country && (
+                    <span className="flex items-center gap-1">
+                      <i className="fa-solid fa-location-dot text-blue-600"></i>
+                      <span className="capitalize">{userDetails?.userProfile?.address?.country}</span>
+                    </span>
+                  )}
                 </div>
                 <span className="flex gap-3 text-gray-800 justify-center my-2 text-lg hover:cursor-pointer">
+                    {/* LinkedIn */}
+                    {userDetails?.userProfile?.socialProfiles?.linkedIn && (
+                        <a
+                            href={userDetails.userProfile.socialProfiles.linkedIn}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                        >
+                            <i className="fa-brands fa-linkedin text-blue-700"></i>
+                        </a>
+                    )}
                     {/* GitHub */}
                     {userDetails?.userProfile?.socialProfiles?.github && (
                         <a
@@ -67,35 +89,26 @@ function UserPublicProfile() {
                             <i className="fa-brands fa-square-github"></i>
                         </a>
                     )}
-
                     {/* Twitter */}
                     {userDetails?.userProfile?.socialProfiles?.twitter && (
                         <a
-                            href={
-                                userDetails.userProfile.socialProfiles.twitter
-                            }
+                            href={userDetails.userProfile.socialProfiles.twitter}
                             target="_blank"
                             rel="noopener noreferrer"
                         >
                             <i className="fa-brands fa-square-x-twitter"></i>
                         </a>
                     )}
-
                     {/* Website / Portfolio */}
-                    {userDetails?.userProfile?.socialProfiles
-                        ?.portfolioWebsite && (
+                    {userDetails?.userProfile?.socialProfiles?.portfolioWebsite && (
                         <a
-                            href={
-                                userDetails.userProfile.socialProfiles
-                                    .portfolioWebsite
-                            }
+                            href={userDetails.userProfile.socialProfiles.portfolioWebsite}
                             target="_blank"
                             rel="noopener noreferrer"
                         >
                             <i className="fa-solid fa-globe"></i>
                         </a>
                     )}
-
                     {/* Email */}
                     {userDetails?.userProfile?.socialProfiles?.email && (
                         <a
@@ -106,7 +119,6 @@ function UserPublicProfile() {
                             <i className="fa-solid fa-envelope"></i>
                         </a>
                     )}
-
                     {/* WhatsApp */}
                     {userDetails?.userProfile?.socialProfiles?.whatsapp && (
                         <a
@@ -114,10 +126,7 @@ function UserPublicProfile() {
                             target="_blank"
                             rel="noopener noreferrer"
                         >
-                            <i
-                                className="fa-brands fa-whatsapp text-green-600"
-                                title="WhatsApp"
-                            ></i>
+                            <i className="fa-brands fa-whatsapp text-green-600" title="WhatsApp"></i>
                         </a>
                     )}
                 </span>

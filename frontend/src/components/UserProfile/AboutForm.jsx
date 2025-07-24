@@ -73,7 +73,13 @@ function AboutForm({ userData }) {
     e.preventDefault();
     try {
       setUpdating(true);
-      const res = await userService.updateUserProfile(formData);
+      // أرسل location و address.country و socialProfiles معاً
+      const payload = {
+        ...formData,
+        address: { country: formData.location },
+        socialProfiles: formData.socialProfiles,
+      };
+      const res = await userService.updateUserProfile(payload);
       if (res.status === 200) {
         setIsChanged(false);
       }
@@ -216,6 +222,73 @@ function AboutForm({ userData }) {
             cols="50"
             className="w-full p-2 rounded-lg border border-gray-400 my-2"
           ></textarea>
+        </div>
+        <div className="my-6">
+          <h3 className="font-semibold mb-2">Social Profiles</h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <InputField
+              label="LinkedIn"
+              id="linkedIn"
+              value={formData.socialProfiles?.linkedIn || ""}
+              onChange={e => setFormData({
+                ...formData,
+                socialProfiles: { ...formData.socialProfiles, linkedIn: e.target.value }
+              })}
+              placeholder="https://linkedin.com/in/username"
+            />
+            <InputField
+              label="GitHub"
+              id="github"
+              value={formData.socialProfiles?.github || ""}
+              onChange={e => setFormData({
+                ...formData,
+                socialProfiles: { ...formData.socialProfiles, github: e.target.value }
+              })}
+              placeholder="https://github.com/username"
+            />
+            <InputField
+              label="Twitter"
+              id="twitter"
+              value={formData.socialProfiles?.twitter || ""}
+              onChange={e => setFormData({
+                ...formData,
+                socialProfiles: { ...formData.socialProfiles, twitter: e.target.value }
+              })}
+              placeholder="https://twitter.com/username"
+            />
+            <InputField
+              label="Website / Portfolio"
+              id="portfolioWebsite"
+              value={formData.socialProfiles?.portfolioWebsite || ""}
+              onChange={e => setFormData({
+                ...formData,
+                socialProfiles: { ...formData.socialProfiles, portfolioWebsite: e.target.value }
+              })}
+              placeholder="https://yourwebsite.com"
+            />
+            <InputField
+              label="Email"
+              id="email"
+              value={formData.socialProfiles?.email || ""}
+              onChange={e => setFormData({
+                ...formData,
+                socialProfiles: { ...formData.socialProfiles, email: e.target.value }
+              })}
+              placeholder="your@email.com"
+              type="email"
+            />
+            <InputField
+              label="WhatsApp"
+              id="whatsapp"
+              value={formData.socialProfiles?.whatsapp || ""}
+              onChange={e => setFormData({
+                ...formData,
+                socialProfiles: { ...formData.socialProfiles, whatsapp: e.target.value }
+              })}
+              placeholder="مثال: 9665xxxxxxx"
+              type="text"
+            />
+          </div>
         </div>
         {isChanged && (
           <div className="flex gap-6 my-4 justify-end">
