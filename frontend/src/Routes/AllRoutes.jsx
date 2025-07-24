@@ -18,6 +18,7 @@ import SavedJobs from "../Pages/SavedJobs";
 import UserPublicProfile from "../Pages/UserPublicProfile";
 import CompanyPublicProfile from "../Pages/CompanyPublicProfile";
 import ForgotPassword from "../Pages/ForgotPassword";
+import ResetPassword from "../Pages/ResetPassword";
 function AllRoutes() {
   return (
     <Routes>
@@ -25,6 +26,7 @@ function AllRoutes() {
       <Route path="/login" element={<Login />} />
       <Route path="/signup" element={<Signup />} />
       <Route path="/forgot-password" element={<ForgotPassword />} />
+      <Route path="/reset-password" element={<ResetPassword />} />
       <Route path="/jobs" element={<JobListing />} />
       <Route path="/job/:id" element={<JobDetails />} />
       <Route path="/companies" element={<CompaniesPage />} />

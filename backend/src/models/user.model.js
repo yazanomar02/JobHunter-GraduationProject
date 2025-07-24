@@ -11,6 +11,9 @@ const userSchema = new Schema(
     role: { type: String, required: true },
     refreshToken: String,
     userProfile: { type: Schema.Types.Mixed },
+    // حقول استعادة كلمة المرور (معزولة)
+    resetPasswordToken: String,
+    resetPasswordExpires: Date,
   },
   {
     timestamps: true,

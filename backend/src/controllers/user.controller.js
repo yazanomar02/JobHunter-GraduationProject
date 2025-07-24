@@ -8,6 +8,8 @@ import {
 } from "../utils/cloudinary.service.js";
 import { JobSeekerProfile } from "../models/jobSeekerProfile.model.js";
 import { PRODUCTION_URL } from "../constants.js";
+import crypto from "crypto";
+import { sendEmail } from "../utils/sendEmail.js";
 
 // Testing endpoints
 const ping = (req, res) => {
@@ -354,6 +356,55 @@ const userPublicProfile = asyncHandler(async (req, res) => {
   return res
     .status(200)
     .json(new ApiResponse(200, user, "User profile fetch successful"));
+});
+
+// طلب استعادة كلمة المرور (معزول)
+export const forgotPassword = asyncHandler(async (req, res) => {
+  const { email } = req.body;
+  if (!email) {
+    return res.status(400).json({ message: "Email is required" });
+  }
+  const user = await User.findOne({ email });
+  if (user) {
+    const resetToken = crypto.randomBytes(32).toString("hex");
+    const resetTokenHash = crypto.createHash("sha256").update(resetToken).digest("hex");
+    user.resetPasswordToken = resetTokenHash;
+    user.resetPasswordExpires = Date.now() + 1000 * 60 * 30; // 30 دقيقة
+    await user.save({ validateBeforeSave: false });
+    const resetUrl = `${process.env.FRONTEND_URL || "http://localhost:3000"}/reset-password?token=${resetToken}`;
+    try {
+      await sendEmail({
+        to: user.email,
+        subject: "Reset your JobHunter password",
+        html: `<p>Hello,</p><p>You requested to reset your password. Click the link below to set a new password:</p><p><a href='${resetUrl}'>Reset Password</a></p><p>If you did not request this, just ignore this email.</p>`
+      });
+    } catch (err) {
+      return res.status(500).json({ message: "Failed to send reset email. Please try again later." });
+    }
+  }
+  // لا تكشف إذا كان الإيميل غير موجود
+  return res.status(200).json({ message: "If this email exists, a reset link has been sent." });
+});
+
+// إعادة تعيين كلمة المرور (معزول)
+export const resetPassword = asyncHandler(async (req, res) => {
+  const { token, password } = req.body;
+  if (!token || !password) {
+    return res.status(400).json({ message: "Token and new password are required" });
+  }
+  const resetTokenHash = crypto.createHash("sha256").update(token).digest("hex");
+  const user = await User.findOne({
+    resetPasswordToken: resetTokenHash,
+    resetPasswordExpires: { $gt: Date.now() },
+  });
+  if (!user) {
+    return res.status(400).json({ message: "Invalid or expired reset token" });
+  }
+  user.password = password;
+  user.resetPasswordToken = undefined;
+  user.resetPasswordExpires = undefined;
+  await user.save();
+  return res.status(200).json({ message: "Password reset successfully" });
 });
 
 export {

@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import EditProfile from "../components/UserProfile/EditProfile";
 import UpdateResume from "../components/UserProfile/UpdateResume";
-import { Navigate, useNavigate } from "react-router-dom";
+import { Link, Navigate, useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 
 function UserProfile() {
@@ -52,12 +52,21 @@ function UserProfile() {
             </div>
           </div>
 
-          <div
-            className="text-sm font-medium text-green-500 hover:cursor-pointer"
-            onClick={openPublicProfile}
-          >
-            View public profile
-          </div>
+            <div className="flex gap-4">
+                <div
+                className="text-sm font-medium text-blue-500 hover:cursor-pointer"
+              >
+                <Link to="/reset-password" className="text-blue-500 hover:underline">Reset Password</Link>
+              </div>
+
+              <div
+              className="text-sm font-medium text-green-500 hover:cursor-pointer"
+              onClick={openPublicProfile}
+            >
+              View public profile
+            </div>
+            </div>
+        
         </div>
       </div>
       <div className="border my-5 ">

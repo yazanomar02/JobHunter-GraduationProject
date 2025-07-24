@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import logo from "../components/assets/media/JobHunter.png";
+import { userService } from "../services/userService";
 
 function ForgotPassword() {
   const [email, setEmail] = useState("");
@@ -8,22 +9,21 @@ function ForgotPassword() {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
     setSuccess("");
     setError("");
-    // منطق وهمي فقط
-    setTimeout(() => {
-      if (email.includes("@")) {
-        setSuccess("If this email exists, a reset link has been sent.");
-        setError("");
-      } else {
-        setError("Please enter a valid email address.");
-        setSuccess("");
-      }
+    try {
+      await userService.forgotPassword({ email });
+      setSuccess("If this email exists, a reset link has been sent.");
+      setError("");
+    } catch (err) {
+      setError(err.response?.data?.message || "Failed to send reset link. Please check your email or try again later.");
+      setSuccess("");
+    } finally {
       setLoading(false);
-    }, 1200);
+    }
   };
 
   return (

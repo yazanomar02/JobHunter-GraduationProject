@@ -14,6 +14,8 @@ export const userService = {
   applyForJob,
   removeSavedJob,
   getPublicProfile,
+  forgotPassword,
+  resetPassword,
 };
 
 async function login(userData) {
@@ -72,4 +74,12 @@ async function removeSavedJob(jobId) {
 
 async function getPublicProfile(id) {
   return await apiCall("get", `/users/public-profile/${id}`);
+}
+
+async function forgotPassword(data) {
+  return apiCall("post", "/users/forgot-password", data);
+}
+
+async function resetPassword(data) {
+  return apiCall("post", "/users/reset-password", data);
 }
