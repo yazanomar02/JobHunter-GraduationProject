@@ -17,12 +17,14 @@ import PrivateRoutes from "./PrivateRoutes";
 import SavedJobs from "../Pages/SavedJobs";
 import UserPublicProfile from "../Pages/UserPublicProfile";
 import CompanyPublicProfile from "../Pages/CompanyPublicProfile";
+import ForgotPassword from "../Pages/ForgotPassword";
 function AllRoutes() {
   return (
     <Routes>
       <Route path="/" element={<Home />} />
       <Route path="/login" element={<Login />} />
       <Route path="/signup" element={<Signup />} />
+      <Route path="/forgot-password" element={<ForgotPassword />} />
       <Route path="/jobs" element={<JobListing />} />
       <Route path="/job/:id" element={<JobDetails />} />
       <Route path="/companies" element={<CompaniesPage />} />
