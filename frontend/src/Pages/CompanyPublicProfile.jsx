@@ -6,6 +6,12 @@ import { useSelector } from "react-redux";
 import InputField from "../components/Common/FormComponents/InputField";
 import TextArea from "../components/Common/FormComponents/TextArea";
 
+// دالة لإزالة وسوم HTML
+function stripHtml(html) {
+  if (!html) return "";
+  return html.replace(/<[^>]+>/g, "");
+}
+
 function CompanyPublicProfile() {
   const { id } = useParams();
   const { userData } = useSelector((store) => store.auth);
@@ -16,6 +22,7 @@ function CompanyPublicProfile() {
   const [form, setForm] = useState(null);
   const [saving, setSaving] = useState(false);
   const [successMsg, setSuccessMsg] = useState("");
+  const [openJobDesc, setOpenJobDesc] = useState(null);
 
   const isOwner = userData && userData.role === "employer" && userData._id === id;
 
@@ -377,9 +384,22 @@ function CompanyPublicProfile() {
             {company.jobListings && company.jobListings.length > 0 ? (
               company.jobListings.map((job) => (
                 <div key={job?._id} className="bg-green-50 border border-green-100 rounded-lg p-3 flex flex-col md:flex-row md:items-center md:gap-4 shadow-sm">
-                  <span className="font-medium text-green-900 text-base flex items-center gap-2"><i className="fa-solid fa-briefcase"></i> {job?.title}</span>
-                  <span className="text-xs text-gray-500">{job?.location}</span>
-                  <span className="text-xs text-gray-400">{job?.description}</span>
+                  <div className="flex items-center gap-2">
+                    <i className="fa-solid fa-briefcase text-green-700"></i>
+                    <span className="font-medium text-green-900 text-base">{job?.title}</span>
+                    <button
+                      className="ml-2 text-gray-500 hover:text-green-700 focus:outline-none"
+                      onClick={() => setOpenJobDesc(openJobDesc === job._id ? null : job._id)}
+                      title={openJobDesc === job._id ? "Hide details" : "Show details"}
+                    >
+                      <i className={`fa-solid fa-chevron-${openJobDesc === job._id ? "up" : "down"}`}></i>
+                    </button>
+                  </div>
+                  {openJobDesc === job._id && (
+                    <div className="mt-2 text-gray-700 text-sm whitespace-pre-line">
+                      {stripHtml(job?.description)}
+                    </div>
+                  )}
                 </div>
               ))
             ) : <span className="text-gray-400">No active jobs.</span>}

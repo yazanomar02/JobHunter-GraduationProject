@@ -316,14 +316,22 @@ const removeFromShortlist = asyncHandler(async (req, res) => {
 
 const getCompanyById = asyncHandler(async (req, res) => {
     const companyId = req.params.id;
-    // نبحث عن المستخدم الذي دوره employer وله هذا ال id
-    const company = await User.findOne({ _id: companyId, role: "employer" }).select(
-        "email _id userProfile"
-    );
+    const company = await User.findOne({ _id: companyId, role: "employer" }).select("email _id userProfile");
     if (!company) {
         throw new ApiError(404, "Company not found");
     }
-    return res.status(200).json(new ApiResponse(200, company, "Company profile fetched successfully"));
+    // جلب تفاصيل الوظائف النشطة فقط
+    let jobListings = [];
+    if (company.userProfile?.jobListings?.length) {
+        jobListings = await Job.find({
+            _id: { $in: company.userProfile.jobListings },
+            active: true,
+        }).select("title location description active");
+    }
+    // دمج تفاصيل الوظائف في userProfile
+    const companyObj = company.toObject();
+    companyObj.userProfile.jobListings = jobListings;
+    return res.status(200).json(new ApiResponse(200, companyObj, "Company profile fetched successfully"));
 });
 
 const updateCompanyProfile = asyncHandler(async (req, res) => {
