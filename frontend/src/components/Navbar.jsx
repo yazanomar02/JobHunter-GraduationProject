@@ -78,7 +78,8 @@ function Navbar() {
             open ? "top-20 " : "top-[-490px]"
           }`}
         >
-          {navLinks.map((link, index) => {
+          {/* روابط التنقل تظهر فقط إذا كان المستخدم مسجلاً الدخول */}
+          {status && navLinks.map((link, index) => {
             return (
               <li
                 key={index}

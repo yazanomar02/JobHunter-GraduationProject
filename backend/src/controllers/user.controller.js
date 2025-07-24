@@ -75,6 +75,35 @@ const registerUser = asyncHandler(async (req, res) => {
     throw new ApiError(500, "Something went wrong while registering the user");
   }
 
+  // إرسال رسالة ترحيب جميلة
+  try {
+    await sendEmail({
+      to: email,
+      subject: "Welcome to JobHunter!",
+      html: `
+        <div style="font-family: 'Segoe UI', Arial, sans-serif; background: #f4f8fb; padding: 40px 0;">
+          <div style="max-width: 480px; margin: auto; background: #fff; border-radius: 16px; box-shadow: 0 2px 12px #0001; overflow: hidden;">
+            <div style="background: linear-gradient(90deg, #16a34a 0%, #22d3ee 100%); padding: 32px 0; text-align: center;">
+              <img src='https://i.ibb.co/3kQw1kF/JobHunter-Logo.png' alt='JobHunter' style='width: 64px; border-radius: 12px; margin-bottom: 12px;' />
+              <h1 style="color: #fff; margin: 0; font-size: 2.2rem;">Welcome to JobHunter!</h1>
+            </div>
+            <div style="padding: 32px 24px; text-align: center;">
+              <h2 style="color: #16a34a; margin-bottom: 12px;">Hello,</h2>
+              <p style="color: #222; font-size: 1.1rem; margin-bottom: 24px;">We're excited to have you join our community! 🚀<br/>Start exploring thousands of jobs and connect with top companies now.</p>
+              <div style="margin: 24px 0;">
+                <a href="https://jobhunter.com" style="background: #16a34a; color: #fff; text-decoration: none; padding: 12px 32px; border-radius: 8px; font-size: 1rem; font-weight: bold;">Go to JobHunter</a>
+              </div>
+              <p style="color: #888; font-size: 0.95rem;">If you have any questions, just reply to this email.<br/>Happy job hunting!<br/><b>JobHunter Team</b></p>
+            </div>
+          </div>
+        </div>
+      `
+    });
+  } catch (err) {
+    // لا توقف التسجيل إذا فشل الإرسال
+    console.error("[registerUser] Failed to send welcome email:", err);
+  }
+
   return res
     .status(201)
     .json(new ApiResponse(201, {}, "User registered successfully"));

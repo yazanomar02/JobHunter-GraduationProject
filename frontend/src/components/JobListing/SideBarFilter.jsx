@@ -158,10 +158,10 @@ function SideBarFilter({ filters, setFilters }) {
             <div className="flex flex-col gap-2">
               <div className="flex justify-between">
                 <RadioButton
-                  id="under-3LPA"
+                  id="under-3K"
                   name="salary-range"
-                  value="Under ₹3 LPA"
-                  label="Under ₹3 LPA"
+                  value="Under $3,000/year"
+                  label="Under $3,000/year"
                   checked={
                     filters.salaryRange.from === 0 &&
                     filters.salaryRange.to === 300000
@@ -170,10 +170,10 @@ function SideBarFilter({ filters, setFilters }) {
                   className="text-gray-500 text-sm font-medium"
                 />
                 <RadioButton
-                  id="3-6LPA"
+                  id="3-6K"
                   name="salary-range"
-                  value="₹3 LPA - ₹6 LPA"
-                  label="₹3 LPA - ₹6 LPA"
+                  value="$3,000 - $6,000/year"
+                  label="$3,000 - $6,000/year"
                   checked={
                     filters.salaryRange.from === 300000 &&
                     filters.salaryRange.to === 600000
@@ -184,10 +184,10 @@ function SideBarFilter({ filters, setFilters }) {
               </div>
               <div className="flex justify-between">
                 <RadioButton
-                  id="6-10LPA"
+                  id="6-10K"
                   name="salary-range"
-                  value="₹6 LPA - ₹10 LPA"
-                  label="₹6 LPA - ₹10 LPA"
+                  value="$6,000 - $10,000/year"
+                  label="$6,000 - $10,000/year"
                   checked={
                     filters.salaryRange.from === 600000 &&
                     filters.salaryRange.to === 1000000
@@ -196,10 +196,10 @@ function SideBarFilter({ filters, setFilters }) {
                   className="text-gray-500 text-sm font-medium"
                 />
                 <RadioButton
-                  id="10-15LPA"
+                  id="10-15K"
                   name="salary-range"
-                  value="₹10 LPA - ₹15 LPA"
-                  label="₹10 LPA - ₹15 LPA"
+                  value="$10,000 - $15,000/year"
+                  label="$10,000 - $15,000/year"
                   checked={
                     filters.salaryRange.from === 1000000 &&
                     filters.salaryRange.to === 1500000
@@ -210,10 +210,10 @@ function SideBarFilter({ filters, setFilters }) {
               </div>
               <div className="flex justify-between">
                 <RadioButton
-                  id="15-20LPA"
+                  id="15-20K"
                   name="salary-range"
-                  value="₹15 LPA - ₹20 LPA"
-                  label="₹15 LPA - ₹20 LPA"
+                  value="$15,000 - $20,000/year"
+                  label="$15,000 - $20,000/year"
                   checked={
                     filters.salaryRange.from === 1500000 &&
                     filters.salaryRange.to === 2000000
@@ -222,10 +222,10 @@ function SideBarFilter({ filters, setFilters }) {
                   className="text-gray-500 text-sm font-medium"
                 />
                 <RadioButton
-                  id="more-than-20LPA"
+                  id="more-than-20K"
                   name="salary-range"
-                  value="More than ₹20 LPA"
-                  label="More than ₹20 LPA"
+                  value="More than $20,000/year"
+                  label="More than $20,000/year"
                   checked={
                     filters.salaryRange.from === 2000000 &&
                     filters.salaryRange.to === 10000000000
