@@ -6,6 +6,8 @@ export const contentService = {
   getJobLocations,
   getCompanies,
   getSavedJobs,
+  sendFeedbackMessage,
+  getAllFeedbackMessages,
 };
 async function getJobs(filters) {
   let params = new URLSearchParams();
@@ -35,4 +37,12 @@ async function getCompanies() {
 
 async function getSavedJobs() {
   return apiCall("get", "/users/saved-jobs");
+}
+
+async function sendFeedbackMessage(data) {
+  return apiCall("post", "/feedback", data);
+}
+
+async function getAllFeedbackMessages() {
+  return apiCall("get", "/feedback");
 }

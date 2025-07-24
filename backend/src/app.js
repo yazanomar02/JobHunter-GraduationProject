@@ -22,11 +22,13 @@ app.use(cookieParser());
 import userRouter from "./routes/user.routes.js";
 import jobRouter from "./routes/jobs.routes.js";
 import companyRouter from "./routes/company.routes.js";
+import feedbackRouter from "./routes/feedback.routes.js";
 // routes declearation
 
 app.use("/api/v1/users", userRouter);
 app.use("/api/v1/", jobRouter);
 app.use("/api/v1/company/", companyRouter);
+app.use("/api/v1/feedback", feedbackRouter);
 
 app.use((err, req, res, next) => {
   res.status(err.statusCode || 500).json(err);

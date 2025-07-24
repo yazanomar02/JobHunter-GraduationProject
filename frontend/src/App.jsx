@@ -4,6 +4,7 @@ import AllRoutes from "./Routes/AllRoutes";
 import useUpdateUserData from "./hooks/useUpdateUserData";
 import { useEffect } from "react";
 import { useSelector } from "react-redux";
+import FeedbackChat from "./components/Common/FeedbackChat";
 
 function App() {
   const { status, userData } = useSelector((store) => store.auth);
@@ -24,6 +25,7 @@ function App() {
           hideOnRoutes.includes(location.pathname)
         ) && <Navbar />}
         <AllRoutes />
+        <FeedbackChat />
       </div>
     </>
   );
