@@ -3,6 +3,8 @@ import { asyncHandler } from "../utils/asyncHandler.js";
 import { Job } from "../models/job.model.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
 import { User } from "../models/user.model.js";
+import { Notification } from "../models/notification.model.js";
+import { JobApplication } from "../models/jobApplication.model.js";
 const getAllJobListings = asyncHandler(async (req, res) => {
     const { _id, role } = req.user;
     if (role !== "employer") {
@@ -360,6 +362,44 @@ const updateCompanyProfile = asyncHandler(async (req, res) => {
     }
     res.status(200).json(new ApiResponse(200, company, "Company profile updated successfully"));
 });
+
+// جلب إشعارات الشركة (حقيقي)
+export const getCompanyNotifications = async (req, res) => {
+  const employerId = req.user._id;
+  const notifications = await Notification.find({ employer: employerId })
+    .sort({ createdAt: -1 })
+    .lean();
+  res.json(notifications.map(n => ({
+    id: n._id,
+    type: n.type,
+    message: n.message,
+    job: n.job,
+    date: n.createdAt,
+    read: n.read,
+  })));
+};
+
+// جلب رسائل المتقدمين (حقيقي)
+export const getApplicantMessages = async (req, res) => {
+  const employerId = req.user._id;
+  // جلب كل الوظائف التي يملكها هذا المستخدم
+  const jobs = await Job.find({ employer: employerId }).select("_id title").lean();
+  const jobIds = jobs.map(j => j._id);
+  const jobTitles = Object.fromEntries(jobs.map(j => [j._id.toString(), j.title]));
+  // جلب كل طلبات التقديم لهذه الوظائف
+  const applications = await JobApplication.find({ job: { $in: jobIds } })
+    .populate("applicant", "userProfile.name userProfile.profilePicture username email")
+    .sort({ createdAt: -1 })
+    .lean();
+  res.json(applications.map(app => ({
+    id: app._id,
+    applicantName: app.applicant?.userProfile?.name || app.applicant?.username || "Anonymous",
+    applicantAvatar: app.applicant?.userProfile?.profilePicture || "",
+    jobTitle: jobTitles[app.job.toString()] || "",
+    message: app.coverLetter,
+    date: app.createdAt,
+  })));
+};
 
 export {
     getAllJobListings,

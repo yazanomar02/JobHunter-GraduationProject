@@ -168,14 +168,16 @@ function Navbar() {
                         aria-orientation="vertical"
                         aria-labelledby="options-menu"
                       >
-                        <Link
-                          to="/profile"
-                          className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                          role="menuitem"
-                          onClick={toggleDropdown}
-                        >
-                          Edit Profile
-                        </Link>
+                        {userData.role !== "admin" && (
+                          <Link
+                            to="/profile"
+                            className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                            role="menuitem"
+                            onClick={toggleDropdown}
+                          >
+                            Edit Profile
+                          </Link>
+                        )}
                         <Link
                           to="/saved-jobs"
                           className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"

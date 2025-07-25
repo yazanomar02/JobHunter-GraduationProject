@@ -6,6 +6,8 @@ import { generateJobDescription } from "../utils/openAi.service.js";
 import { User } from "../models/user.model.js";
 import { JSDOM } from "jsdom";
 import createDOMPurify from "dompurify";
+import { JobApplication } from "../models/jobApplication.model.js";
+import { Notification } from "../models/notification.model.js";
 
 const window = new JSDOM("").window;
 const DOMPurify = createDOMPurify(window);
@@ -252,6 +254,7 @@ const sendJobDescription = asyncHandler(async (req, res) => {
 const applyForJob = asyncHandler(async (req, res) => {
     const { role, _id } = req.user;
     const jobId = req.params.id;
+    const { coverLetter } = req.body;
     if (role !== "jobSeeker") {
         throw new ApiError(
             403,
@@ -269,6 +272,21 @@ const applyForJob = asyncHandler(async (req, res) => {
     job.applicants.push(_id);
     job.markModified("applicants");
     await job.save();
+
+    // إنشاء JobApplication جديدة
+    await JobApplication.create({
+        job: jobId,
+        applicant: _id,
+        coverLetter: coverLetter || "",
+    });
+
+    // إضافة Notification لصاحب الشركة
+    await Notification.create({
+        employer: job.employer,
+        type: "applicant",
+        message: `New applicant for ${job.title}`,
+        job: jobId,
+    });
 
     return res
         .status(200)

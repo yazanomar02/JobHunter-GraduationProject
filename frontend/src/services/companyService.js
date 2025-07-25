@@ -16,6 +16,8 @@ export const companyService = {
     updateJobActivation,
     getCompanyById,
     updateCompanyById,
+    getCompanyNotifications,
+    getApplicantMessages,
 };
 
 async function getAllJobListings() {
@@ -72,4 +74,14 @@ async function getCompanyById(id) {
 
 async function updateCompanyById(id, data) {
     return apiCall("put", `/company/${id}`, data);
+}
+
+// جلب إشعارات الشركة
+export async function getCompanyNotifications() {
+  return apiCall("get", "/company/notifications");
+}
+
+// جلب رسائل المتقدمين
+export async function getApplicantMessages() {
+  return apiCall("get", "/company/applicant-messages");
 }

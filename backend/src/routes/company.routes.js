@@ -10,6 +10,8 @@ import {
   shortlistCandidate,
   getCompanyById,
   updateCompanyProfile,
+  getCompanyNotifications,
+  getApplicantMessages,
 } from "../controllers/company.controllers.js";
 import { verifyJWT } from "../middlewares/auth.middleware.js";
 const router = Router();
@@ -28,6 +30,13 @@ router
 
 router.route("/shortlist-candidate").post(verifyJWT, shortlistCandidate);
 router.route("/remove-from-shortlisted").post(verifyJWT, removeFromShortlist);
+
+// إشعارات الشركة
+router.get("/notifications", verifyJWT, getCompanyNotifications);
+// رسائل المتقدمين
+router.get("/applicant-messages", verifyJWT, getApplicantMessages);
+
+// المسارات الديناميكية في النهاية
 router.route("/:id").get(getCompanyById);
 router.route("/:id").put(verifyJWT, updateCompanyProfile);
 
