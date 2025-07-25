@@ -79,7 +79,7 @@ function SideBarFilter({ filters, setFilters }) {
               <span className="font-bold">Date Post</span>
             </div>
             <div className=" mx-auto space-y-6 border-b pb-4">
-              <Select onChange={(e) => handleDatePostChange(e)}>
+              <Select value={filters.datePosted} onChange={(e) => handleDatePostChange(e)}>
                 <SelectItem value="today">Today</SelectItem>
                 <SelectItem value="yesterday">Yesterday</SelectItem>
                 <SelectItem value="this_week">This week</SelectItem>

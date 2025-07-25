@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { Navigate } from "react-router-dom";
 import { setLoadingFalse } from "../store/authSlice";
 
-function PrivateRoutes({ children }) {
+function PrivateRoutes({ children, adminOnly = false }) {
   const { status, userData, isLoading } = useSelector((store) => store.auth);
   const dispatch = useDispatch();
   //
@@ -28,7 +28,9 @@ function PrivateRoutes({ children }) {
   if (!userData) {
     return <Navigate to="/login" />;
   }
-
+  if (adminOnly && userData.role !== "admin") {
+    return <Navigate to="/" replace />;
+  }
   return children;
 }
 

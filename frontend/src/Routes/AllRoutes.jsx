@@ -19,6 +19,7 @@ import UserPublicProfile from "../Pages/UserPublicProfile";
 import CompanyPublicProfile from "../Pages/CompanyPublicProfile";
 import ForgotPassword from "../Pages/ForgotPassword";
 import ResetPassword from "../Pages/ResetPassword";
+import AdminDashboard from "../Pages/AdminDashboard/AdminDashboard";
 function AllRoutes() {
   return (
     <Routes>
@@ -68,6 +69,7 @@ function AllRoutes() {
       <Route path="/company-onboarding" element={<CompanyOnboarding />} />
       <Route path="/company/:id/:slug" element={<CompanyPublicProfile />} />
       <Route path="/saved-jobs" element={<SavedJobs />} />
+      <Route path="/admin" element={<PrivateRoutes adminOnly={true}><AdminDashboard /></PrivateRoutes>} />
       <Route path="*" element={<NotFound />} />
     </Routes>
   );

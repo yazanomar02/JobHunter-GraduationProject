@@ -54,6 +54,8 @@ function Login() {
             } else {
               navigate("/company-onboarding");
             }
+          } else if (userData.role === "admin") {
+            navigate("/admin");
           }
         }
       }

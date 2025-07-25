@@ -28,3 +28,11 @@ export const verifyJWT = asyncHandler(async (req, res, next) => {
         throw new ApiError(401, error);
     }
 });
+
+// Middleware للتحقق من صلاحية الـ Admin
+export function isAdmin(req, res, next) {
+  if (req.user && req.user.role === "admin") {
+    return next();
+  }
+  return res.status(403).json({ message: "Access denied. Admins only." });
+}

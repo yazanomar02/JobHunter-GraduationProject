@@ -40,21 +40,31 @@ const getJobs = asyncHandler(async (req, res) => {
 
     // Date posted filter
     if (req.query.datePosted) {
-        const today = new Date();
+        const now = new Date();
         if (req.query.datePosted === "today") {
-            query.datePosted = { $gte: new Date(today.setHours(0, 0, 0, 0)) };
+            const startOfDay = new Date(now);
+            startOfDay.setHours(0, 0, 0, 0);
+            query.datePosted = { $gte: startOfDay };
         } else if (req.query.datePosted === "yesterday") {
+            const startOfToday = new Date(now);
+            startOfToday.setHours(0, 0, 0, 0);
+            const startOfYesterday = new Date(startOfToday);
+            startOfYesterday.setDate(startOfYesterday.getDate() - 1);
             query.datePosted = {
-                $gte: new Date(today.setDate(today.getDate() - 1)),
-                $lt: new Date(today.setHours(0, 0, 0, 0)),
+                $gte: startOfYesterday,
+                $lt: startOfToday,
             };
         } else if (req.query.datePosted === "this_week") {
+            const startOfWeek = new Date(now);
+            startOfWeek.setDate(startOfWeek.getDate() - 7);
             query.datePosted = {
-                $gte: new Date(today.setDate(today.getDate() - 7)),
+                $gte: startOfWeek,
             };
         } else if (req.query.datePosted === "this_month") {
+            const startOfMonth = new Date(now);
+            startOfMonth.setMonth(startOfMonth.getMonth() - 1);
             query.datePosted = {
-                $gte: new Date(today.setMonth(today.getMonth() - 1)),
+                $gte: startOfMonth,
             };
         }
     }
@@ -72,22 +82,24 @@ const getJobs = asyncHandler(async (req, res) => {
     //Salary filters
 
     if (req.query.salaryFrom && req.query.salaryTo) {
+        const salaryFrom = Number(req.query.salaryFrom);
+        const salaryTo = Number(req.query.salaryTo);
         query.$or = [
             {
                 "salaryRange.from": {
-                    $gte: req.query.salaryFrom,
-                    $lte: req.query.salaryTo,
+                    $gte: salaryFrom,
+                    $lte: salaryTo,
                 },
             },
             {
                 "salaryRange.to": {
-                    $gte: req.query.salaryFrom,
-                    $lte: req.query.salaryTo,
+                    $gte: salaryFrom,
+                    $lte: salaryTo,
                 },
             },
             {
-                "salaryRange.from": { $lte: req.query.salaryFrom },
-                "salaryRange.to": { $gte: req.query.salaryTo },
+                "salaryRange.from": { $lte: salaryFrom },
+                "salaryRange.to": { $gte: salaryTo },
             },
         ];
     }

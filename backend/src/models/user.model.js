@@ -8,7 +8,8 @@ const userSchema = new Schema(
     username: { type: String, required: true, unique: true },
     password: { type: String, required: true },
     email: { type: String, required: true, unique: true },
-    role: { type: String, required: true },
+    // نوع المستخدم: user (افتراضي), admin, employer, jobSeeker
+    role: { type: String, required: true, enum: ["user", "admin", "employer", "jobSeeker"], default: "user" },
     refreshToken: String,
     userProfile: { type: Schema.Types.Mixed },
     // حقول استعادة كلمة المرور (معزولة)

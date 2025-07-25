@@ -92,7 +92,7 @@ function JobCard({ job, redirectToDetail }) {
                   <Dot />
                   <div className="strippend">
                     <span className="text-gray-400">
-                      ₹ {salaryRange.from}-₹ {salaryRange.to} INR
+                      $ {salaryRange.from} - $ {salaryRange.to} USD
                     </span>
                   </div>
                 </div>

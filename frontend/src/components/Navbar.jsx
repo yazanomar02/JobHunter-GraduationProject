@@ -4,6 +4,9 @@ import logo from "./assets/media/JobHunter.png";
 import { useDispatch, useSelector } from "react-redux";
 import { userService } from "../services/userService";
 import { logout } from "../store/authSlice";
+import { FaUserCircle } from "react-icons/fa";
+
+const DEFAULT_AVATAR = "https://upload.wikimedia.org/wikipedia/commons/2/2c/Default_pfp.svg";
 
 function Navbar() {
   const navLinks = [
@@ -25,13 +28,12 @@ function Navbar() {
   const { status, userData } = useSelector((store) => store.auth);
   const [open, setOpen] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
-  const [profilePicture, setProfilePicture] = useState(
-    "https://upload.wikimedia.org/wikipedia/commons/2/2c/Default_pfp.svg"
-  );
+  const [profilePicture, setProfilePicture] = useState(DEFAULT_AVATAR);
   useEffect(() => {
     const profilePicture =
       userData?.userProfile?.profilePicture ||
-      userData?.userProfile?.companyLogo;
+      userData?.userProfile?.companyLogo ||
+      DEFAULT_AVATAR;
     setProfilePicture(profilePicture);
   }, [userData]);
   const toggleDropdown = () => setIsOpen(!isOpen);
@@ -79,25 +81,44 @@ function Navbar() {
           }`}
         >
           {/* روابط التنقل تظهر فقط إذا كان المستخدم مسجلاً الدخول */}
-          {status && navLinks.map((link, index) => {
-            return (
-              <li
-                key={index}
-                className="lg:ml-8 text-base font-semibold lg:my-0 my-7"
-              >
-                <NavLink
-                  to={link.path}
-                  className={({ isActive }) =>
-                    isActive
-                      ? activeStyle
-                      : "text-gray-500 hover:text-green-700"
-                  }
-                >
-                  {link.title}
-                </NavLink>
-              </li>
-            );
-          })}
+          {status && (
+            <>
+              {navLinks.map((link, index) => {
+                return (
+                  <li
+                    key={index}
+                    className="lg:ml-8 text-base font-semibold lg:my-0 my-7"
+                  >
+                    <NavLink
+                      to={link.path}
+                      className={({ isActive }) =>
+                        isActive
+                          ? activeStyle
+                          : "text-gray-500 hover:text-green-700"
+                      }
+                    >
+                      {link.title}
+                    </NavLink>
+                  </li>
+                );
+              })}
+              {/* رابط Admin يظهر فقط للـ admin */}
+              {userData?.role === "admin" && (
+                <li className="lg:ml-8 text-base font-semibold lg:my-0 my-7">
+                  <NavLink
+                    to="/admin"
+                    className={({ isActive }) =>
+                      isActive
+                        ? activeStyle
+                        : "text-gray-500 hover:text-green-700"
+                    }
+                  >
+                    Admin
+                  </NavLink>
+                </li>
+              )}
+            </>
+          )}
 
           {!status ? (
             <div className=" lg:flex ">
@@ -122,7 +143,7 @@ function Navbar() {
                 </div>
                 <div className="relative shado">
                   <div
-                    className="rounded-full h-9 w-9 hover:cursor-pointer overflow-hidden flex justify-center items-center border"
+                    className="rounded-full h-9 w-9 hover:cursor-pointer overflow-hidden flex justify-center items-center border shadow"
                     onClick={() => {
                       if (userData.role !== "employer") {
                         toggleDropdown();
@@ -131,7 +152,13 @@ function Navbar() {
                       }
                     }}
                   >
-                    <img src={profilePicture} className="object-cover" />
+                    {profilePicture && profilePicture !== DEFAULT_AVATAR ? (
+                      <img src={profilePicture} className="object-cover w-full h-full" onError={e => { e.target.onerror = null; e.target.src = DEFAULT_AVATAR; }} />
+                    ) : userData?.username ? (
+                      <span className="text-xl font-bold text-gray-600">{userData.username[0].toUpperCase()}</span>
+                    ) : (
+                      <FaUserCircle className="text-2xl text-gray-400" />
+                    )}
                   </div>
                   {isOpen && (
                     <div className="absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5">

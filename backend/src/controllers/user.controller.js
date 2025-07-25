@@ -47,7 +47,7 @@ const generateAccessAndRefereshTokens = async (userId) => {
 };
 
 const registerUser = asyncHandler(async (req, res) => {
-  const { email, password, role, userProfile } = req.body;
+  const { email, password, userProfile } = req.body;
 
   if ([email, password].some((field) => field?.trim() === "")) {
     throw new ApiError(400, "All fields are required");
@@ -59,11 +59,12 @@ const registerUser = asyncHandler(async (req, res) => {
   }
 
   const username = email.split("@")[0];
+  // الدور دائماً 'user' عند التسجيل من الواجهة العامة
   const user = await User.create({
     email: email.toLowerCase(),
     username: username.toLowerCase(),
     password,
-    role,
+    role: "user",
     userProfile,
   });
 
