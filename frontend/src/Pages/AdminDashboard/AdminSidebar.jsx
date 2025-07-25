@@ -12,9 +12,8 @@ const sections = [
 
 const AdminSidebar = ({ section, setSection }) => {
   return (
-    <aside className="w-60 bg-white shadow-xl h-screen p-6 flex flex-col">
+    <aside className="bg-white shadow-lg w-64 min-h-screen flex flex-col justify-between border-r overflow-y-auto">
       <div className="mb-10 flex flex-col items-center">
-        <img src="/vite.svg" alt="logo" className="w-10 h-10 mb-2" />
         <span className="text-xl font-extrabold text-green-600 tracking-wide">JobHunter</span>
         <div className="text-xs text-gray-400 mt-1 font-medium">Admin Panel</div>
       </div>
