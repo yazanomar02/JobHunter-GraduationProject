@@ -59,12 +59,16 @@ const registerUser = asyncHandler(async (req, res) => {
   }
 
   const username = email.split("@")[0];
-  // الدور دائماً 'user' عند التسجيل من الواجهة العامة
+  // تحقق من الدور القادم من الواجهة
+  let role = req.body.role;
+  if (role !== "employer" && role !== "jobSeeker") {
+    throw new ApiError(400, "Invalid role. Only employer or jobSeeker allowed.");
+  }
   const user = await User.create({
     email: email.toLowerCase(),
     username: username.toLowerCase(),
     password,
-    role: "user",
+    role,
     userProfile,
   });
 
@@ -92,7 +96,7 @@ const registerUser = asyncHandler(async (req, res) => {
               <h2 style="color: #16a34a; margin-bottom: 12px;">Hello,</h2>
               <p style="color: #222; font-size: 1.1rem; margin-bottom: 24px;">We're excited to have you join our community! 🚀<br/>Start exploring thousands of jobs and connect with top companies now.</p>
               <div style="margin: 24px 0;">
-                <a href="https://jobhunter.com" style="background: #16a34a; color: #fff; text-decoration: none; padding: 12px 32px; border-radius: 8px; font-size: 1rem; font-weight: bold;">Go to JobHunter</a>
+                <a href="http://localhost:5173/login" style="background: #16a34a; color: #fff; text-decoration: none; padding: 12px 32px; border-radius: 8px; font-size: 1rem; font-weight: bold;">Go to JobHunter</a>
               </div>
               <p style="color: #888; font-size: 0.95rem;">If you have any questions, just reply to this email.<br/>Happy job hunting!<br/><b>JobHunter Team</b></p>
             </div>

@@ -136,11 +136,6 @@ function Navbar() {
           ) : (
             <>
               <div className="px-20 flex gap-8 items-center justify-center">
-                <div>
-                  <span>
-                    <i className="fa-solid fa-bell text-xl text-gray-600"></i>
-                  </span>
-                </div>
                 <div className="relative shado">
                   <div
                     className="rounded-full h-9 w-9 hover:cursor-pointer overflow-hidden flex justify-center items-center border shadow"
