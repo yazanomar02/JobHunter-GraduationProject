@@ -29,6 +29,7 @@ function Navbar() {
   const [open, setOpen] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const [profilePicture, setProfilePicture] = useState(DEFAULT_AVATAR);
+
   useEffect(() => {
     const profilePicture =
       userData?.userProfile?.profilePicture ||
@@ -36,6 +37,7 @@ function Navbar() {
       DEFAULT_AVATAR;
     setProfilePicture(profilePicture);
   }, [userData]);
+
   const toggleDropdown = () => setIsOpen(!isOpen);
 
   const handleLogout = () => {
@@ -49,7 +51,6 @@ function Navbar() {
         console.log(error);
       });
   };
-
 
   const activeStyle = "text-green-700 pb-4 border-b-2 border-green-700";
 
@@ -140,7 +141,7 @@ function Navbar() {
                   <div
                     className="rounded-full h-9 w-9 hover:cursor-pointer overflow-hidden flex justify-center items-center border shadow"
                     onClick={() => {
-                      if (userData.role !== "employer") {
+                      if (userData?.role === "employer") {
                         toggleDropdown();
                       } else {
                         navigate("/dashboard/home");
@@ -181,8 +182,8 @@ function Navbar() {
                         >
                           Saved Jobs
                         </Link>
-                        <p
-                          className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:cursor-pointer"
+                        <button
+                          className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                           role="menuitem"
                           onClick={() => {
                             handleLogout();
@@ -190,7 +191,7 @@ function Navbar() {
                           }}
                         >
                           Logout
-                        </p>
+                        </button>
                       </div>
                     </div>
                   )}

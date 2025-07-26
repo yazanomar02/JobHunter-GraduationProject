@@ -33,23 +33,12 @@ function App() {
         toastOptions={{
           duration: 4000,
           style: {
-            background: '#141a2f',
-            color: '#fff',
-            borderRadius: '8px',
-            fontSize: '14px',
-            fontWeight: '500',
+            background: "#141a2f",
+            color: "#fff",
           },
-          success: {
-            iconTheme: {
-              primary: '#10b981',
-              secondary: '#fff',
-            },
-          },
-          error: {
-            iconTheme: {
-              primary: '#ef4444',
-              secondary: '#fff',
-            },
+          iconTheme: {
+            primary: "#fff",
+            secondary: "#141a2f",
           },
         }}
       />
