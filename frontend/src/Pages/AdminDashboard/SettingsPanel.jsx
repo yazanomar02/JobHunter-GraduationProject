@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { FaMoon, FaBell, FaLanguage, FaLock, FaCog } from "react-icons/fa";
+import { showSuccessToast, showErrorToast } from "../../utils/toast";
 
 const SettingsPanel = () => {
   const [darkMode, setDarkMode] = useState(false);
@@ -10,7 +11,7 @@ const SettingsPanel = () => {
   return (
     <div className="bg-white rounded-2xl shadow-lg p-8 max-w-xl mx-auto font-sans">
       <h2 className="text-2xl font-bold mb-6 flex items-center gap-2">
-        <FaCog className="text-green-600" /> Settings
+        <FaCog className="text-brand" /> Settings
       </h2>
       <div className="space-y-6">
         {/* Dark Mode */}
@@ -26,7 +27,7 @@ const SettingsPanel = () => {
               checked={darkMode}
               onChange={() => setDarkMode((v) => !v)}
             />
-            <div className="w-11 h-6 bg-gray-200 rounded-full peer peer-checked:bg-green-500 transition-all relative">
+            <div className="w-11 h-6 bg-gray-200 rounded-full peer peer-checked:bg-brand transition-all relative">
               <div className={`absolute top-0.5 left-1 ${darkMode ? 'translate-x-5' : ''} w-4 h-4 bg-white rounded-full shadow transition-all`}></div>
             </div>
           </label>
@@ -60,7 +61,7 @@ const SettingsPanel = () => {
               checked={notifications}
               onChange={() => setNotifications((v) => !v)}
             />
-            <div className="w-11 h-6 bg-gray-200 rounded-full peer peer-checked:bg-green-500 transition-all relative">
+            <div className="w-11 h-6 bg-gray-200 rounded-full peer peer-checked:bg-brand transition-all relative">
               <div className={`absolute top-0.5 left-1 ${notifications ? 'translate-x-5' : ''} w-4 h-4 bg-white rounded-full shadow transition-all`}></div>
             </div>
           </label>
@@ -81,7 +82,12 @@ const SettingsPanel = () => {
         </div>
         {/* Save Button */}
         <div className="flex justify-end pt-4">
-          <button className="bg-green-600 text-white px-6 py-2 rounded-lg font-semibold hover:bg-green-700 transition">
+          <button 
+            className="bg-brand text-white px-6 py-2 rounded-lg font-semibold hover:bg-brand-light transition"
+            onClick={() => {
+              showSuccessToast("تم حفظ الإعدادات بنجاح!");
+            }}
+          >
             Save Settings
           </button>
         </div>

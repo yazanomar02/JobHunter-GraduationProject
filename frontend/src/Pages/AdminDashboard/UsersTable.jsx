@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
-import { getAllUsers, promoteUser, deleteUser } from "../../services/adminService";
+import { getAllUsers, promoteUser, deleteUser, getAdminsCount } from "../../services/adminService";
 import { FaTrash, FaUserShield, FaSearch } from "react-icons/fa";
+import { showSuccessToast, showErrorToast, showLoadingToast, dismissLoadingToast, dismissLoadingToastWithError } from "../../utils/toast";
+import ConfirmationModal from "../../components/Common/ConfirmationModal";
 
 const UsersTable = () => {
   const [users, setUsers] = useState([]);
@@ -9,15 +11,24 @@ const UsersTable = () => {
   const [actionLoading, setActionLoading] = useState("");
   const [search, setSearch] = useState("");
   const [roleFilter, setRoleFilter] = useState("all");
+  const [showConfirmModal, setShowConfirmModal] = useState(false);
+  const [confirmAction, setConfirmAction] = useState(null);
+  const [confirmData, setConfirmData] = useState(null);
+  const [adminsCount, setAdminsCount] = useState(0);
 
   const fetchUsers = async () => {
     setLoading(true);
     setError("");
     try {
-      const { data } = await getAllUsers();
-      setUsers(data);
+      const [usersResponse, adminsCountResponse] = await Promise.all([
+        getAllUsers(),
+        getAdminsCount()
+      ]);
+      setUsers(usersResponse.data);
+      setAdminsCount(adminsCountResponse.data.adminsCount);
     } catch (err) {
       setError("Failed to fetch users");
+      showErrorToast("فشل في جلب بيانات المستخدمين");
     }
     setLoading(false);
   };
@@ -27,27 +38,41 @@ const UsersTable = () => {
   }, []);
 
   const handlePromote = async (id) => {
-    if (!window.confirm("Are you sure you want to promote this user to Admin?")) return;
+    const loadingToast = showLoadingToast("جاري ترقية المستخدم...");
     setActionLoading(id);
     try {
       await promoteUser(id);
+      dismissLoadingToast(loadingToast, "تم ترقية المستخدم بنجاح!");
       fetchUsers();
     } catch (err) {
-      alert("Failed to promote user!");
+      dismissLoadingToastWithError(loadingToast, "فشل في ترقية المستخدم!");
     }
     setActionLoading("");
   };
 
+  const showPromoteConfirm = (id) => {
+    setConfirmAction(() => () => handlePromote(id));
+    setConfirmData({ type: "promote", id });
+    setShowConfirmModal(true);
+  };
+
   const handleDelete = async (id) => {
-    if (!window.confirm("Are you sure you want to delete this user?")) return;
+    const loadingToast = showLoadingToast("جاري حذف المستخدم...");
     setActionLoading(id);
     try {
       await deleteUser(id);
+      dismissLoadingToast(loadingToast, "تم حذف المستخدم بنجاح!");
       fetchUsers();
     } catch (err) {
-      alert("Failed to delete user!");
+      dismissLoadingToastWithError(loadingToast, "فشل في حذف المستخدم!");
     }
     setActionLoading("");
+  };
+
+  const showDeleteConfirm = (id) => {
+    setConfirmAction(() => () => handleDelete(id));
+    setConfirmData({ type: "delete", id });
+    setShowConfirmModal(true);
   };
 
   // فلترة وبحث
@@ -127,17 +152,18 @@ const UsersTable = () => {
                     {u.role !== "admin" && (
                       <button
                         className="bg-blue-500 text-white p-2 rounded-full hover:bg-blue-600 transition flex items-center justify-center"
-                        onClick={() => handlePromote(u._id)}
+                        onClick={() => showPromoteConfirm(u._id)}
                         disabled={actionLoading === u._id}
                         title="Promote to Admin"
                       >
                         <FaUserShield />
                       </button>
                     )}
-                    {u.role !== "admin" && (
+                    {/* إظهار زر الحذف للمستخدمين العاديين والأدمنات (إذا كان هناك أكثر من أدمن) */}
+                    {(u.role !== "admin" || (u.role === "admin" && adminsCount > 1)) && (
                       <button
                         className="bg-red-500 text-white p-2 rounded-full hover:bg-red-600 transition flex items-center justify-center"
-                        onClick={() => handleDelete(u._id)}
+                        onClick={() => showDeleteConfirm(u._id)}
                         disabled={actionLoading === u._id}
                         title="Delete"
                       >
@@ -151,6 +177,31 @@ const UsersTable = () => {
           </tbody>
         </table>
       </div>
+      
+      {/* Confirmation Modal */}
+      <ConfirmationModal
+        isOpen={showConfirmModal}
+        onClose={() => setShowConfirmModal(false)}
+        onConfirm={confirmAction}
+        title={
+          confirmData?.type === "promote" 
+            ? "ترقية المستخدم" 
+            : "حذف المستخدم"
+        }
+        message={
+          confirmData?.type === "promote"
+            ? "هل أنت متأكد من ترقية هذا المستخدم إلى مدير؟"
+            : `هل أنت متأكد من حذف هذا المستخدم؟ لا يمكن التراجع عن هذه العملية.${
+                users.find(u => u._id === confirmData?.id)?.role === "admin" 
+                  ? `\n\nملاحظة: سيتم حذف هذا الأدمن من النظام.`
+                  : ""
+              }`
+        }
+        confirmText={
+          confirmData?.type === "promote" ? "ترقية" : "حذف"
+        }
+        type={confirmData?.type === "promote" ? "warning" : "danger"}
+      />
     </div>
   );
 };

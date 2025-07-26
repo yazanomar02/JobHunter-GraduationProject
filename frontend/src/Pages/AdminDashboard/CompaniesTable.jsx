@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { getAllCompanies, deleteCompany } from "../../services/adminService";
 import { FaTrash, FaSearch } from "react-icons/fa";
+import { showSuccessToast, showErrorToast, showLoadingToast, dismissLoadingToast, dismissLoadingToastWithError } from "../../utils/toast";
+import ConfirmationModal from "../../components/Common/ConfirmationModal";
 
 const CompaniesTable = () => {
   const [companies, setCompanies] = useState([]);
@@ -8,6 +10,8 @@ const CompaniesTable = () => {
   const [error, setError] = useState("");
   const [actionLoading, setActionLoading] = useState("");
   const [search, setSearch] = useState("");
+  const [showConfirmModal, setShowConfirmModal] = useState(false);
+  const [confirmAction, setConfirmAction] = useState(null);
 
   const fetchCompanies = async () => {
     setLoading(true);
@@ -17,6 +21,7 @@ const CompaniesTable = () => {
       setCompanies(data);
     } catch (err) {
       setError("Failed to fetch companies");
+      showErrorToast("فشل في جلب بيانات الشركات");
     }
     setLoading(false);
   };
@@ -26,15 +31,21 @@ const CompaniesTable = () => {
   }, []);
 
   const handleDelete = async (id) => {
-    if (!window.confirm("Are you sure you want to delete this company?")) return;
+    const loadingToast = showLoadingToast("جاري حذف الشركة...");
     setActionLoading(id);
     try {
       await deleteCompany(id);
+      dismissLoadingToast(loadingToast, "تم حذف الشركة وجميع وظائفها وطلباتها بنجاح!");
       fetchCompanies();
     } catch (err) {
-      alert("Failed to delete company!");
+      dismissLoadingToastWithError(loadingToast, "فشل في حذف الشركة!");
     }
     setActionLoading("");
+  };
+
+  const showDeleteConfirm = (id) => {
+    setConfirmAction(() => () => handleDelete(id));
+    setShowConfirmModal(true);
   };
 
   // بحث
@@ -101,7 +112,7 @@ const CompaniesTable = () => {
                   <td className="p-3 border-b border-gray-100 flex gap-2 justify-end">
                     <button
                       className="bg-red-500 text-white p-2 rounded-full hover:bg-red-600 transition flex items-center justify-center"
-                      onClick={() => handleDelete(c._id)}
+                      onClick={() => showDeleteConfirm(c._id)}
                       disabled={actionLoading === c._id}
                       title="Delete"
                     >
@@ -114,6 +125,17 @@ const CompaniesTable = () => {
           </tbody>
         </table>
       </div>
+      
+      {/* Confirmation Modal */}
+      <ConfirmationModal
+        isOpen={showConfirmModal}
+        onClose={() => setShowConfirmModal(false)}
+        onConfirm={confirmAction}
+        title="حذف الشركة"
+        message="هل أنت متأكد من حذف هذه الشركة؟ سيتم حذف جميع الوظائف وطلبات التوظيف المرتبطة بها. لا يمكن التراجع عن هذه العملية."
+        confirmText="حذف"
+        type="danger"
+      />
     </div>
   );
 };

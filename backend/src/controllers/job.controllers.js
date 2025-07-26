@@ -351,8 +351,7 @@ const getJobLocations = asyncHandler(async (req, res) => {
 const getCompanies = asyncHandler(async (req, res) => {
     const companies = await User.find({
         role: "employer",
-        "userProfile.doneOnboarding": true,
-        "userProfile.jobListings.0": { $exists: true },
+        "userProfile.doneOnboarding": true
     }).select(
         "userProfile.companyName userProfile.companyLogo userProfile.jobListings userProfile.companySize userProfile.companySocialProfiles"
     );

@@ -28,4 +28,5 @@ export const deleteJob = (id) => axiosInstance.delete(`${API}/jobs/${id}`);
 
 export const getAllFeedback = () => axiosInstance.get(`${API}/feedback`);
 export const deleteFeedback = (id) => axiosInstance.delete(`${API}/feedback/${id}`);
-export const getAdminStats = () => axiosInstance.get(`${API}/stats`); 
+export const getAdminStats = () => axiosInstance.get(`${API}/stats`);
+export const getAdminsCount = () => axiosInstance.get(`${API}/admins-count`); 

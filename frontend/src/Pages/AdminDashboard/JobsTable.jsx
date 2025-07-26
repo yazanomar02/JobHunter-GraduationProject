@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { getAllJobs, deleteJob } from "../../services/adminService";
 import { FaTrash, FaSearch } from "react-icons/fa";
+import { showSuccessToast, showErrorToast, showLoadingToast, dismissLoadingToast, dismissLoadingToastWithError } from "../../utils/toast";
+import ConfirmationModal from "../../components/Common/ConfirmationModal";
 
 const JobsTable = () => {
   const [jobs, setJobs] = useState([]);
@@ -8,6 +10,8 @@ const JobsTable = () => {
   const [error, setError] = useState("");
   const [actionLoading, setActionLoading] = useState("");
   const [search, setSearch] = useState("");
+  const [showConfirmModal, setShowConfirmModal] = useState(false);
+  const [confirmAction, setConfirmAction] = useState(null);
 
   const fetchJobs = async () => {
     setLoading(true);
@@ -17,6 +21,7 @@ const JobsTable = () => {
       setJobs(data);
     } catch (err) {
       setError("Failed to fetch jobs");
+      showErrorToast("فشل في جلب بيانات الوظائف");
     }
     setLoading(false);
   };
@@ -26,15 +31,21 @@ const JobsTable = () => {
   }, []);
 
   const handleDelete = async (id) => {
-    if (!window.confirm("Are you sure you want to delete this job?")) return;
+    const loadingToast = showLoadingToast("جاري حذف الوظيفة...");
     setActionLoading(id);
     try {
       await deleteJob(id);
+      dismissLoadingToast(loadingToast, "تم حذف الوظيفة وجميع طلباتها بنجاح!");
       fetchJobs();
     } catch (err) {
-      alert("Failed to delete job!");
+      dismissLoadingToastWithError(loadingToast, "فشل في حذف الوظيفة!");
     }
     setActionLoading("");
+  };
+
+  const showDeleteConfirm = (id) => {
+    setConfirmAction(() => () => handleDelete(id));
+    setShowConfirmModal(true);
   };
 
   // بحث
@@ -101,7 +112,7 @@ const JobsTable = () => {
                   <td className="p-3 border-b border-gray-100 flex gap-2 justify-end">
                     <button
                       className="bg-red-500 text-white p-2 rounded-full hover:bg-red-600 transition flex items-center justify-center"
-                      onClick={() => handleDelete(j._id)}
+                      onClick={() => showDeleteConfirm(j._id)}
                       disabled={actionLoading === j._id}
                       title="Delete"
                     >
@@ -114,6 +125,17 @@ const JobsTable = () => {
           </tbody>
         </table>
       </div>
+      
+      {/* Confirmation Modal */}
+      <ConfirmationModal
+        isOpen={showConfirmModal}
+        onClose={() => setShowConfirmModal(false)}
+        onConfirm={confirmAction}
+        title="حذف الوظيفة"
+        message="هل أنت متأكد من حذف هذه الوظيفة؟ سيتم حذف جميع طلبات التوظيف المرتبطة بها. لا يمكن التراجع عن هذه العملية."
+        confirmText="حذف"
+        type="danger"
+      />
     </div>
   );
 };

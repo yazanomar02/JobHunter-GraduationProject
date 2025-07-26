@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { getAllFeedback, deleteFeedback } from "../../services/adminService";
 import { FaTrash, FaSearch } from "react-icons/fa";
+import { showSuccessToast, showErrorToast, showLoadingToast, dismissLoadingToast, dismissLoadingToastWithError } from "../../utils/toast";
+import ConfirmationModal from "../../components/Common/ConfirmationModal";
 
 const FeedbackTable = () => {
   const [feedbacks, setFeedbacks] = useState([]);
@@ -8,6 +10,8 @@ const FeedbackTable = () => {
   const [error, setError] = useState("");
   const [actionLoading, setActionLoading] = useState("");
   const [search, setSearch] = useState("");
+  const [showConfirmModal, setShowConfirmModal] = useState(false);
+  const [confirmAction, setConfirmAction] = useState(null);
 
   const fetchFeedbacks = async () => {
     setLoading(true);
@@ -17,6 +21,7 @@ const FeedbackTable = () => {
       setFeedbacks(data);
     } catch (err) {
       setError("Failed to fetch feedback messages");
+      showErrorToast("فشل في جلب رسائل التغذية الراجعة");
     }
     setLoading(false);
   };
@@ -26,15 +31,21 @@ const FeedbackTable = () => {
   }, []);
 
   const handleDelete = async (id) => {
-    if (!window.confirm("Are you sure you want to delete this message?")) return;
+    const loadingToast = showLoadingToast("جاري حذف الرسالة...");
     setActionLoading(id);
     try {
       await deleteFeedback(id);
+      dismissLoadingToast(loadingToast, "تم حذف الرسالة بنجاح!");
       fetchFeedbacks();
     } catch (err) {
-      alert("Failed to delete message!");
+      dismissLoadingToastWithError(loadingToast, "فشل في حذف الرسالة!");
     }
     setActionLoading("");
+  };
+
+  const showDeleteConfirm = (id) => {
+    setConfirmAction(() => () => handleDelete(id));
+    setShowConfirmModal(true);
   };
 
   // بحث
@@ -97,7 +108,7 @@ const FeedbackTable = () => {
                   <td className="p-3 border-b border-gray-100 flex gap-2 justify-end">
                     <button
                       className="bg-red-500 text-white p-2 rounded-full hover:bg-red-600 transition flex items-center justify-center"
-                      onClick={() => handleDelete(f._id)}
+                      onClick={() => showDeleteConfirm(f._id)}
                       disabled={actionLoading === f._id}
                       title="Delete"
                     >
@@ -110,6 +121,17 @@ const FeedbackTable = () => {
           </tbody>
         </table>
       </div>
+      
+      {/* Confirmation Modal */}
+      <ConfirmationModal
+        isOpen={showConfirmModal}
+        onClose={() => setShowConfirmModal(false)}
+        onConfirm={confirmAction}
+        title="حذف الرسالة"
+        message="هل أنت متأكد من حذف هذه الرسالة؟ لا يمكن التراجع عن هذه العملية."
+        confirmText="حذف"
+        type="danger"
+      />
     </div>
   );
 };
