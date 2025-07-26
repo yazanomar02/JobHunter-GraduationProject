@@ -10,7 +10,7 @@ export async function apiCall(method, url, data) {
     try {
         const res = await instance[method](url, data);
         // دعم كل أنواع الردود: إذا كان فيه data.data أعدها، وإلا أعد data مباشرة
-        if (res.data && (Array.isArray(res.data.data) || typeof res.data.data === 'object')) {
+        if (res.data && res.data.data !== undefined) {
             return res.data.data;
         }
         return res.data;
