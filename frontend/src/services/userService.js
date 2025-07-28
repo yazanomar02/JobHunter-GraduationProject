@@ -70,7 +70,7 @@ async function applyForJob(id) {
 }
 
 async function removeSavedJob(jobId) {
-  return apiCall("delete", `/remove-saved-job/${jobId}`);
+  return apiCall("post", `/remove-saved-job/${jobId}`);
 }
 
 async function getPublicProfile(id) {

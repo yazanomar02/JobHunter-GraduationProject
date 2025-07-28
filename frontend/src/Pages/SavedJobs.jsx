@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { contentService } from "../services/contentService";
 import { userService } from "../services/userService";
 import { useNavigate } from "react-router-dom";
+import { showSuccessToast, showErrorToast } from "../utils/toast";
 
 function SavedJobs() {
   const [data, setData] = useState([]);
@@ -26,9 +27,10 @@ function SavedJobs() {
   const removeJob = async (id) => {
     try {
       const res = await userService.removeSavedJob(id);
-      console.log(res);
+      showSuccessToast("تم حذف الوظيفة من المحفوظات بنجاح");
       fetchData();
     } catch (error) {
+      showErrorToast("حدث خطأ أثناء حذف الوظيفة من المحفوظات");
       console.log(error);
     }
   };
