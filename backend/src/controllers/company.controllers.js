@@ -128,7 +128,7 @@ const getAllApplications = asyncHandler(async (req, res) => {
 
         const applicatProfilePromise = User.findById(applicantId)
             .select(
-                "_id userProfile.profilePicture userProfile.address userProfile.bio userProfile.location userProfile.yearsOfExperience userProfile.socialProfiles userProfile.workExperience userProfile.education userProfile.skills userProfile.name userProfile.resume "
+                "_id email userProfile.profilePicture userProfile.address userProfile.bio userProfile.location userProfile.yearsOfExperience userProfile.socialProfiles userProfile.workExperience userProfile.education userProfile.skills userProfile.name userProfile.resume "
             )
             .exec();
         const jobDetailsPromise = Job.findById(jobId)
@@ -193,7 +193,7 @@ const getShortListedCandidates = asyncHandler(async (req, res) => {
 
         const applicatProfilePromise = User.findById(applicantId)
             .select(
-                "_id userProfile.profilePicture userProfile.address userProfile.bio userProfile.location userProfile.yearsOfExperience userProfile.socialProfiles userProfile.workExperience userProfile.education userProfile.skills userProfile.name userProfile.resume "
+                "_id email userProfile.profilePicture userProfile.address userProfile.bio userProfile.location userProfile.yearsOfExperience userProfile.socialProfiles userProfile.workExperience userProfile.education userProfile.skills userProfile.name userProfile.resume "
             )
             .exec();
         const jobDetailsPromise = Job.findById(jobId)

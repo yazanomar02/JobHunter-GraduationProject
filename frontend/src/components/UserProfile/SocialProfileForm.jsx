@@ -25,6 +25,8 @@ function SocialProfileForm({ userData }) {
                 linkedin: userData?.userProfile?.socialProfiles?.linkedin,
                 twitter: userData?.userProfile?.socialProfiles?.twitter,
                 github: userData?.userProfile?.socialProfiles?.github,
+                whatsapp: userData?.userProfile?.socialProfiles?.whatsapp,
+                email: userData?.userProfile?.socialProfiles?.email,
             });
         }
     }, [userData]);
@@ -48,6 +50,8 @@ function SocialProfileForm({ userData }) {
                 linkedin: formData.linkedin,
                 twitter: formData.twitter,
                 github: formData.github,
+                whatsapp: formData.whatsapp,
+                email: formData.email,
             },
         };
         try {
