@@ -75,6 +75,30 @@ function ApplicantsCard({ isShortlisted, data, fetchApplications }) {
     navigate(`/user/${applicantProfile._id}`);
   };
 
+  const sendEmail = () => {
+    const applicantEmail = applicantProfile.email;
+    const subject = encodeURIComponent("التواصل لاجل عقد اجتماع لاستكمال اجراءات الوظيفة");
+    const body = encodeURIComponent(`
+مرحباً ${applicantProfile?.userProfile?.name || 'عزيزي المتقدم'}،
+
+نشكرك على اهتمامك بالوظيفة: ${jobDetails.title}
+
+نود التواصل معك لترتيب اجتماع لمناقشة تفاصيل الوظيفة واستكمال الإجراءات المطلوبة.
+
+يرجى الرد على هذا البريد الإلكتروني لتأكيد موافقتك على الاجتماع.
+
+مع تحياتنا،
+فريق التوظيف
+JobHunter.com
+    `);
+    
+    const mailtoLink = applicantEmail 
+      ? `mailto:${applicantEmail}?subject=${subject}&body=${body}`
+      : `mailto:?subject=${subject}&body=${body}`;
+    
+    window.open(mailtoLink);
+  };
+
   return (
     <div className="rounded border shadow py-3.5 px-4 flex flex-col gap-4">
       <div className="flex flex-col md:flex-row justify-between">
@@ -210,8 +234,11 @@ function ApplicantsCard({ isShortlisted, data, fetchApplications }) {
             >
               ❌ Remove from shortlist
             </button>
-            <button className="p-2 px-4 font-medium text-xs rounded-md bg-black text-white hover:bg-gray-800 hover:text-white flex items-center justify-center">
-              💬 Request to chat
+            <button 
+              className="p-2 px-4 font-medium text-xs rounded-md bg-black text-white hover:bg-gray-800 hover:text-white flex items-center justify-center"
+              onClick={sendEmail}
+            >
+              📧 Send Email
             </button>
           </>
         ) : (
@@ -228,8 +255,11 @@ function ApplicantsCard({ isShortlisted, data, fetchApplications }) {
             >
               🔖 Shortlist
             </button>
-            <button className="p-2 px-4 font-medium text-xs rounded-md bg-black text-white hover:bg-gray-800 hover:text-white flex items-center justify-center">
-              💬 Request to chat
+            <button 
+              className="p-2 px-4 font-medium text-xs rounded-md bg-black text-white hover:bg-gray-800 hover:text-white flex items-center justify-center"
+              onClick={sendEmail}
+            >
+              📧 Send Email
             </button>
           </>
         )}
