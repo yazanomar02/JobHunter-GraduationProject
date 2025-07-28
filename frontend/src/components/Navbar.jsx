@@ -141,11 +141,7 @@ function Navbar() {
                   <div
                     className="rounded-full h-9 w-9 hover:cursor-pointer overflow-hidden flex justify-center items-center border shadow"
                     onClick={() => {
-                      if (userData?.role === "employer") {
-                        toggleDropdown();
-                      } else {
-                        navigate("/dashboard/home");
-                      }
+                      toggleDropdown();
                     }}
                   >
                     {profilePicture && profilePicture !== DEFAULT_AVATAR ? (
