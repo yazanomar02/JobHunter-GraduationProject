@@ -5,14 +5,14 @@ import SelectInput from "../Common/FormComponents/SelectInput.jsx";
 import SubmissionButton from "../Common/Buttons/SubmissionButton.jsx";
 import useUpdateUserData from "../../hooks/useUpdateUserData.jsx";
 function AboutForm({ userData }) {
-  const initialFormData = {
-    name: userData?.userProfile.name,
-    location: userData?.userProfile.location,
-    primaryRole: userData?.userProfile.primaryRole,
-    yearsOfExperience: userData?.userProfile.yearsOfExperience,
-    bio: userData?.userProfile.bio,
-    profilePicture: userData?.userProfile.profilePicture,
-  };
+  const [initialFormData, setInitialFormData] = useState({
+    name: "",
+    location: "",
+    primaryRole: "",
+    yearsOfExperience: "",
+    bio: "",
+    profilePicture: "",
+  });
 
   const [formData, setFormData] = useState(initialFormData);
   const [isChanged, setIsChanged] = useState(false);
@@ -20,23 +20,26 @@ function AboutForm({ userData }) {
   const [updating, setUpdating] = useState(null);
 
   const updateUserData = useUpdateUserData();
+  
   useEffect(() => {
     if (userData) {
-      setFormData({
-        ...formData,
-        name: userData.userProfile.name,
-        location: userData.userProfile.location,
-        primaryRole: userData.userProfile.primaryRole,
-        yearsOfExperience: userData.userProfile.yearsOfExperience,
-        bio: userData.userProfile.bio,
-        profilePicture: userData.userProfile.profilePicture,
-      });
+      const newFormData = {
+        name: userData.userProfile.name || "",
+        location: userData.userProfile.location || "",
+        primaryRole: userData.userProfile.primaryRole || "",
+        yearsOfExperience: userData.userProfile.yearsOfExperience || "",
+        bio: userData.userProfile.bio || "",
+        profilePicture: userData.userProfile.profilePicture || "",
+      };
+      setFormData(newFormData);
+      // تحديث initialFormData أيضاً
+      setInitialFormData(newFormData);
     }
   }, [userData]);
 
   useEffect(() => {
     setIsChanged(JSON.stringify(formData) !== JSON.stringify(initialFormData));
-  }, [formData]);
+  }, [formData, initialFormData]);
 
   const handleInputChange = (e) => {
   const { name, value } = e.target;
@@ -46,23 +49,42 @@ function AboutForm({ userData }) {
 
   const handleFileChange = async (e) => {
     const file = e.target.files[0];
-    const reader = new FileReader();
-
-    reader.onload = () => {
-      setFormData({ ...formData, profilePicture: reader.result });
-    };
-
+    
     if (file) {
-      reader.readAsDataURL(file);
+      // التحقق من نوع الملف
+      if (!file.type.startsWith('image/')) {
+        alert('Please select an image file');
+        return;
+      }
+      
+      // التحقق من حجم الملف (5MB كحد أقصى)
+      if (file.size > 5 * 1024 * 1024) {
+        alert('File size should be less than 5MB');
+        return;
+      }
+      
       try {
         setUploadProgress(true);
         const res = await userService.updateProfilePicture(file);
-        if (res.status === 200) {
+        
+        // التحقق من نجاح العملية
+        if (res && (res.status === 200 || res.statusCode === 200)) {
+          // تحديث الصورة في formData بعد نجاح الرفع
+          const reader = new FileReader();
+          reader.onload = () => {
+            setFormData({ ...formData, profilePicture: reader.result });
+          };
+          reader.readAsDataURL(file);
           updateUserData();
+          alert('Profile picture updated successfully!');
+        } else {
+          throw new Error('Failed to upload image');
         }
-        setUploadProgress(false);
       } catch (error) {
         console.error(`Error updating profile picture: ${error}`);
+        alert('Failed to upload image. Please try again.');
+      } finally {
+        setUploadProgress(false);
       }
     } else {
       setFormData({ ...formData, profilePicture: null });
@@ -73,25 +95,34 @@ function AboutForm({ userData }) {
     e.preventDefault();
     try {
       setUpdating(true);
-      // أرسل location و address.country و socialProfiles معاً
+      // تأكد من تضمين bio في الـ payload
       const payload = {
-        ...formData,
+        name: formData.name,
+        location: formData.location,
+        primaryRole: formData.primaryRole,
+        yearsOfExperience: formData.yearsOfExperience,
+        bio: formData.bio,
         address: { country: formData.location },
-        socialProfiles: formData.socialProfiles,
+        socialProfiles: formData.socialProfiles || {},
       };
+      
       const res = await userService.updateUserProfile(payload);
       if (res.status === 200) {
+        updateUserData();
         setIsChanged(false);
+        // إظهار رسالة نجاح
+        alert("Profile updated successfully!");
       }
-      setUpdating(false);
     } catch (error) {
       console.log(error);
+    } finally {
       setUpdating(false);
     }
   };
 
   const handleCancel = () => {
     setFormData(initialFormData);
+    setIsChanged(false);
   };
 
   const locationOptions = [
@@ -158,23 +189,34 @@ function AboutForm({ userData }) {
         />
         <div className="py-5 flex gap-5 items-center">
           <div className="rounded-full h-[4.5rem] w-[4.5rem] overflow-hidden border">
-            <img src={formData.profilePicture} alt="User" />
+            <img 
+              src={formData.profilePicture || "https://upload.wikimedia.org/wikipedia/commons/2/2c/Default_pfp.svg"} 
+              alt="User" 
+              onError={(e) => {
+                e.target.src = "https://upload.wikimedia.org/wikipedia/commons/2/2c/Default_pfp.svg";
+              }}
+            />
           </div>
           <div>
             <input
               type="file"
               id="profilePicture"
               name="profilePicture"
+              accept="image/*"
               onChange={handleFileChange}
               hidden
             />
             <button
               type="button"
-              className="border border-black py-2 px-3 rounded-md font-medium text-sm"
+              className="border border-black py-2 px-3 rounded-md font-medium text-sm disabled:opacity-50 disabled:cursor-not-allowed"
               onClick={() => document.getElementById("profilePicture").click()}
+              disabled={uploadProgress}
             >
               {uploadProgress ? "Uploading..." : "Upload a new photo"}
             </button>
+            {uploadProgress && (
+              <p className="text-xs text-blue-600 mt-1">Please wait, uploading image...</p>
+            )}
           </div>
         </div>
         <SelectInput

@@ -4,30 +4,31 @@ import InputField from "../Common/FormComponents/InputField";
 import { userService } from "../../services/userService";
 
 function SocialProfileForm({ userData }) {
-    const initialFormData = {
-        website: userData?.userProfile?.socialProfiles?.portfolioWebsite || "",
-        linkedin: userData?.userProfile?.socialProfiles?.linkedin || "",
-        twitter: userData?.userProfile?.socialProfiles?.twitter || "",
-        github: userData?.userProfile?.socialProfiles?.github || "",
-        whatsapp: userData?.userProfile?.socialProfiles?.whatsapp || "",
-        email: userData?.userProfile?.socialProfiles?.email || "",
-    };
+    const [initialFormData, setInitialFormData] = useState({
+        website: "",
+        linkedin: "",
+        twitter: "",
+        github: "",
+        whatsapp: "",
+        email: "",
+    });
 
     const [formData, setFormData] = useState(initialFormData);
     const [isChanged, setIsChanged] = useState(false);
     const [updating, setUpdating] = useState(null);
+    
     useEffect(() => {
         if (userData) {
-            setFormData({
-                ...formData,
-                website:
-                    userData?.userProfile?.socialProfiles?.portfolioWebsite,
-                linkedin: userData?.userProfile?.socialProfiles?.linkedin,
-                twitter: userData?.userProfile?.socialProfiles?.twitter,
-                github: userData?.userProfile?.socialProfiles?.github,
-                whatsapp: userData?.userProfile?.socialProfiles?.whatsapp,
-                email: userData?.userProfile?.socialProfiles?.email,
-            });
+            const newFormData = {
+                website: userData?.userProfile?.socialProfiles?.portfolioWebsite || "",
+                linkedin: userData?.userProfile?.socialProfiles?.linkedin || "",
+                twitter: userData?.userProfile?.socialProfiles?.twitter || "",
+                github: userData?.userProfile?.socialProfiles?.github || "",
+                whatsapp: userData?.userProfile?.socialProfiles?.whatsapp || "",
+                email: userData?.userProfile?.socialProfiles?.email || "",
+            };
+            setFormData(newFormData);
+            setInitialFormData(newFormData);
         }
     }, [userData]);
 
@@ -35,7 +36,7 @@ function SocialProfileForm({ userData }) {
         setIsChanged(
             JSON.stringify(formData) !== JSON.stringify(initialFormData)
         );
-    }, [formData]);
+    }, [formData, initialFormData]);
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
@@ -59,17 +60,19 @@ function SocialProfileForm({ userData }) {
             const res = await userService.updateUserProfile(data);
             if (res.status === 200) {
                 setIsChanged(false);
+                alert('Social profiles updated successfully!');
             }
-            setUpdating(false);
         } catch (error) {
             console.log(error);
+            alert('Failed to update social profiles. Please try again.');
+        } finally {
             setUpdating(false);
         }
     };
 
     const handleCancel = () => {
         setFormData(initialFormData);
-        console.log(formData);
+        setIsChanged(false);
     };
     return (
         <div>
@@ -77,8 +80,9 @@ function SocialProfileForm({ userData }) {
                 <InputField
                     label="Email"
                     id="email"
+                    name="email"
                     type="email"
-                    value={formData.email}
+                    value={formData.email || ""}
                     onChange={handleInputChange}
                     isRequired={true}
                     icon={<i className="fa-solid fa-envelope"></i>}
@@ -88,8 +92,9 @@ function SocialProfileForm({ userData }) {
                 <InputField
                     label="WhatsApp"
                     id="whatsapp"
+                    name="whatsapp"
                     type="tel"
-                    value={formData.whatsapp}
+                    value={formData.whatsapp || ""}
                     onChange={handleInputChange}
                     isRequired={false}
                     icon={
@@ -101,7 +106,8 @@ function SocialProfileForm({ userData }) {
                 <InputField
                     label="Website / Portfolio"
                     id="website"
-                    value={formData.website}
+                    name="website"
+                    value={formData.website || ""}
                     onChange={handleInputChange}
                     isRequired={false}
                     icon={<i className="fa-solid fa-globe"></i>}
@@ -110,7 +116,8 @@ function SocialProfileForm({ userData }) {
                 <InputField
                     label="Linkedin"
                     id="linkedin"
-                    value={formData.linkedin}
+                    name="linkedin"
+                    value={formData.linkedin || ""}
                     onChange={handleInputChange}
                     isRequired={false}
                     icon={<i className="fa-brands fa-linkedin-in"></i>}
@@ -119,7 +126,8 @@ function SocialProfileForm({ userData }) {
                 <InputField
                     label="Twitter"
                     id="twitter"
-                    value={formData.twitter}
+                    name="twitter"
+                    value={formData.twitter || ""}
                     onChange={handleInputChange}
                     isRequired={false}
                     icon={<i className="fa-brands fa-twitter"></i>}
@@ -128,28 +136,29 @@ function SocialProfileForm({ userData }) {
                 <InputField
                     label="GitHub"
                     id="github"
-                    value={formData.github}
+                    name="github"
+                    value={formData.github || ""}
                     onChange={handleInputChange}
                     isRequired={false}
                     placeholder={"https://github.com/username"}
                     icon={<i className="fa-brands fa-github"></i>}
                 />
-                {isChanged && (
-                    <div className="flex gap-6 my-4 justify-end">
+                <div className="flex gap-6 my-4 justify-end">
+                    {isChanged && (
                         <SubmissionButton
                             type="button"
                             onClick={handleCancel}
                             color="white"
                             label="Cancel"
                         />
-                        <SubmissionButton
-                            type="submit"
-                            onClick={handleSubmit}
-                            color="black"
-                            label={updating ? "Saving..." : "Save"}
-                        />
-                    </div>
-                )}
+                    )}
+                    <SubmissionButton
+                        type="submit"
+                        onClick={handleSubmit}
+                        color="black"
+                        label={updating ? "Saving..." : "Save"}
+                    />
+                </div>
             </form>
         </div>
     );

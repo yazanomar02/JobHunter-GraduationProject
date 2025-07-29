@@ -103,6 +103,21 @@ function Navbar() {
                   </li>
                 );
               })}
+              {/* رابط Dashboard يظهر فقط للـ employer */}
+              {userData?.role === "employer" && (
+                <li className="lg:ml-8 text-base font-semibold lg:my-0 my-7">
+                  <NavLink
+                    to="/dashboard/home"
+                    className={({ isActive }) =>
+                      isActive
+                        ? activeStyle
+                        : "text-gray-500 hover:text-green-700"
+                    }
+                  >
+                    Dashboard
+                  </NavLink>
+                </li>
+              )}
               {/* رابط Admin يظهر فقط للـ admin */}
               {userData?.role === "admin" && (
                 <li className="lg:ml-8 text-base font-semibold lg:my-0 my-7">

@@ -6,9 +6,9 @@ const instance = axios.create({
     withCredentials: true,
 });
 
-export async function apiCall(method, url, data) {
+export async function apiCall(method, url, data, config = {}) {
     try {
-        const res = await instance[method](url, data);
+        const res = await instance[method](url, data, config);
         // دعم كل أنواع الردود: إذا كان فيه data.data أعدها، وإلا أعد data مباشرة
         if (res.data && res.data.data !== undefined) {
             return res.data.data;
