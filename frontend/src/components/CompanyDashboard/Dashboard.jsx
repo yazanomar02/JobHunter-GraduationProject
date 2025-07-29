@@ -90,7 +90,7 @@ function Dashboard() {
                         <i className="fa-regular fa-rectangle-xmark"></i>
                     </div>
                     <div className="flex flex-col justify-center ">
-                        <p className="font-semibold text-lg">124</p>
+                        <p className="font-semibold text-lg">{jobData.filter(job => job.active === false).length}</p>
                         <p className="text-xs text-gray-500">Closed Jobs</p>
                     </div>
                 </div>
